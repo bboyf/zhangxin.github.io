@@ -1,0 +1,438 @@
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    /* 兜底背景色 */
+    background-color: #f3f4f6;
+    
+    /* 方案：本地图片 + 半透明遮罩 */
+    /* 请确保 bg.jpg 已经下载并放在项目根目录下 */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+        url('bg.jpg');
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* 固定背景 */
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* 移除之前的 SVG 尝试 */
+/* body::before { display: none; } */
+
+a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 头部样式 (已废弃，保留占位或删除) */
+/* .hero { ... } */
+
+/* === Bento Grid 布局 === */
+.bento-section {
+    padding: 60px 0 40px;
+    background-color: transparent; /* 让背景透出来 */
+}
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 左侧占2份，右侧占1份 */
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.bento-card {
+    /* 增加半透明效果，形成毛玻璃质感 */
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* 个人资料卡片 */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* 移除固定最小高度，改为让其自适应或至少和右侧一样高 */
+    height: 100%; 
+    min-height: 420px; /* 稍微增加一点，保证左侧不至于太短 */
+    /* 继承通用的 bento-card 背景设置，这里只需要微调 */
+    background: rgba(255, 255, 255, 0.6); 
+}
+
+.greeting-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f2f5;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 20px;
+    width: fit-content;
+}
+
+.wave-emoji {
+    font-size: 1.2rem;
+    margin-right: 8px;
+    animation: wave 2.5s infinite;
+    transform-origin: 70% 70%;
+    display: inline-block;
+}
+
+@keyframes wave {
+    0% { transform: rotate( 0.0deg) }
+    10% { transform: rotate(14.0deg) }
+    20% { transform: rotate(-8.0deg) }
+    30% { transform: rotate(14.0deg) }
+    40% { transform: rotate(-4.0deg) }
+    50% { transform: rotate(10.0deg) }
+    60% { transform: rotate( 0.0deg) }
+    100% { transform: rotate( 0.0deg) }
+}
+
+.profile-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #2d3748, #4a5568);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.role-text {
+    font-size: 1.2rem;
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.bio-text {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    max-width: 90%;
+}
+
+/* 社交链接行 */
+.social-row {
+    display: flex;
+    gap: 15px;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background-color: #f7f9fc;
+    color: #4a5568;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.social-btn i {
+    margin-right: 8px;
+}
+
+.social-btn:hover {
+    background-color: #667eea;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.social-btn.github:hover { background-color: #333; }
+.social-btn.email:hover { background-color: #EA4335; }
+.social-btn.linkedin:hover { background-color: #0077b5; }
+
+/* 右侧小部件列 */
+.widgets-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%; /* 占满高度 */
+}
+
+.widget-card {
+    /* 移除 flex: 1，改为根据内容自适应，但至少有一定高度 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    /* 继承毛玻璃效果 */
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* 时钟优化 */
+.clock-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    min-height: 140px; /* 给时钟一个固定高度 */
+}
+
+.clock-display {
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: 'Segoe UI', sans-serif; /* 换个现代字体 */
+    letter-spacing: 1px;
+    margin: 10px 0;
+}
+
+.card-icon {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.clock-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* 日历优化 */
+.calendar-card {
+    /* 移除背景色定义，已经在 .widget-card 定义了 */
+    /* 关键：允许日历根据内容撑开 */
+    flex: 1; 
+    min-height: 320px; /* 给日历足够的最小高度，确保能放下6行日期 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 顶部对齐 */
+    background: rgba(255, 255, 255, 0.8); /* 稍微不透明一点，保证文字清晰 */
+}
+
+.calendar-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.calendar-wrapper {
+    width: 100%;
+    /* 确保日历主体部分能占满剩余空间 */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 减小行间距，防止过高 */
+    gap: 2px;
+    text-align: center;
+}
+
+.calendar-date {
+    font-size: 0.85rem;
+    /* 调整内边距，使其更紧凑 */
+    padding: 6px 0;
+    border-radius: 6px;
+    color: #555;
+    /* 确保宽高比接近 1:1 或适合显示 */
+    aspect-ratio: 1 / 1; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-date.today {
+    background-color: #667eea;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    font-weight: bold;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-card {
+        min-height: auto;
+    }
+    
+    .widgets-column {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .widget-card {
+        min-width: 150px;
+        min-height: 250px; /* 给日历足够的最小高度 */
+    }
+    
+    /* 手机端如果太窄，强制竖排 */
+    @media (max-width: 480px) {
+        .widgets-column {
+            flex-direction: column;
+        }
+        .widget-card {
+            min-height: auto;
+        }
+    }
+}
+/* 通用部分样式 */
+.section {
+    padding: 60px 0;
+    background-color: #fff;
+}
+
+.section h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #2c3e50;
+}
+
+.bg-light {
+    background-color: #f9f9f9;
+}
+
+/* 关于我部分布局调整 - 已废弃 */
+/*
+.about-container { ... }
+.about-content { ... }
+.widgets-sidebar { ... }
+.widget { ... }
+.clock-widget { ... }
+.calendar-widget { ... }
+*/
+
+/* 项目卡片样式 */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-card h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.project-desc {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.tags {
+    margin-bottom: 15px;
+}
+
+.tags span {
+    display: inline-block;
+    background-color: #eef2f7;
+    color: #4a5568;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.project-links a {
+    font-size: 0.9rem;
+    margin-right: 15px;
+    font-weight: 500;
+}
+
+/* 技能列表样式 */
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.skill-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 500;
+    color: #555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 页脚样式 */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 30px 0;
+}
+
+footer p {
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: underline;
+}
