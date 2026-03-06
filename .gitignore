@@ -1,7 +1,7 @@
 # 忽略子项目文件夹（它们有自己的独立仓库）
 flowers/
 Django_project/
-flowers/
+homework_end/
 
 # 忽略系统文件
 .DS_Store
