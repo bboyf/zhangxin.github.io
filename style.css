@@ -5,68 +5,238 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    /* 兜底背景色 */
-    background-color: #f3f4f6;
-    
-    /* 方案：本地图片 + 半透明遮罩 */
-    /* 请确保 bg.jpg 已经下载并放在项目根目录下 */
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
-        url('bg.jpg');
-    
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* 固定背景 */
-    background-repeat: no-repeat;
-    min-height: 100vh;
+:root {
+    --c-bg: #E3E1DC;
+    --c-dark: #121212;
+    --c-blue: #2563eb;
+    --c-red: #dc2626;
+    --c-green: #16a34a;
+    --c-purple: #7c3aed;
+    --c-orange: #ea580c;
+    --font-display: 'Syncopate', sans-serif;
+    --font-body: 'Manrope', sans-serif;
 }
 
-/* 移除之前的 SVG 尝试 */
-/* body::before { display: none; } */
+body {
+    font-family: var(--font-body);
+    line-height: 1.6;
+    color: #333;
+    background: var(--c-bg);
+    overflow-x: hidden;
+}
+
+/* 噪点叠加层 */
+.noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    opacity: 0.04;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Toast 提示 */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--c-dark);
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    z-index: 9500;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 500ms cubic-bezier(0.22,1,0.36,1), opacity 500ms;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
 
 a {
     text-decoration: none;
-    color: #007bff;
+    color: inherit;
     transition: color 0.3s;
 }
 
-a:hover {
-    color: #0056b3;
-}
-
 .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 1.5rem;
 }
 
-/* 头部样式 (已废弃，保留占位或删除) */
-/* .hero { ... } */
+/* 导航栏 */
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 300ms;
+}
 
-/* === Bento Grid 布局 === */
+.nav.scrolled {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.nav-logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--c-dark);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--c-dark);
+    opacity: 0.7;
+    transition: opacity 150ms;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+}
+
+.menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--c-dark);
+    cursor: pointer;
+}
+
+/* 移动端菜单 */
+.mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--c-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transform: translateY(-100%);
+    transition: transform 700ms cubic-bezier(0.22,1,0.36,1);
+}
+
+.mobile-menu.open {
+    transform: translateY(0);
+}
+
+.mobile-menu a {
+    font-family: var(--font-display);
+    color: #fff;
+    font-size: 1.5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .menu-btn {
+        display: block;
+    }
+}
+
+/* Wrapper */
+.wrapper {
+    position: relative;
+    z-index: 10;
+    background: var(--c-bg);
+    box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+}
+
+/* Hero 区域 */
+.hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 12vw;
+    font-weight: 700;
+    line-height: 1;
+    overflow: hidden;
+}
+
+.hero-title span {
+    display: inline-block;
+    transform: translateY(110%);
+}
+
+.hero-sub {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+    margin-top: 1.5rem;
+}
+
+/* Bento Grid 布局 */
 .bento-section {
-    padding: 60px 0 40px;
-    background-color: transparent; /* 让背景透出来 */
+    padding: 6rem 0 4rem;
+    background: var(--c-bg);
 }
 
 .bento-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* 左侧占2份，右侧占1份 */
-    gap: 24px;
-    margin-top: 20px;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
 }
 
 .bento-card {
-    /* 增加半透明效果，形成毛玻璃质感 */
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
-    padding: 32px;
+    padding: 2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -79,14 +249,8 @@ a:hover {
 
 /* 个人资料卡片 */
 .profile-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    /* 移除固定最小高度，改为让其自适应或至少和右侧一样高 */
-    height: 100%; 
-    min-height: 420px; /* 稍微增加一点，保证左侧不至于太短 */
-    /* 继承通用的 bento-card 背景设置，这里只需要微调 */
-    background: rgba(255, 255, 255, 0.6); 
+    height: 100%;
+    min-height: 420px;
 }
 
 .greeting-badge {
@@ -98,7 +262,7 @@ a:hover {
     font-size: 0.9rem;
     font-weight: 600;
     color: #555;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     width: fit-content;
 }
 
@@ -133,13 +297,13 @@ a:hover {
     font-size: 1.2rem;
     color: #667eea;
     font-weight: 500;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
 }
 
 .bio-text {
     color: #666;
     line-height: 1.8;
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
     max-width: 90%;
 }
 
@@ -166,47 +330,42 @@ a:hover {
 }
 
 .social-btn:hover {
-    background-color: #667eea;
-    color: #fff;
     transform: translateY(-2px);
 }
 
-.social-btn.github:hover { background-color: #333; }
-.social-btn.email:hover { background-color: #EA4335; }
-.social-btn.linkedin:hover { background-color: #0077b5; }
+.social-btn.github:hover { background-color: #333; color: #fff; }
+.social-btn.email:hover { background-color: #EA4335; color: #fff; }
 
 /* 右侧小部件列 */
 .widgets-column {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    height: 100%; /* 占满高度 */
+    gap: 1.5rem;
+    height: 100%;
 }
 
 .widget-card {
-    /* 移除 flex: 1，改为根据内容自适应，但至少有一定高度 */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 20px;
-    /* 继承毛玻璃效果 */
+    padding: 1.25rem;
     background: rgba(255, 255, 255, 0.7);
 }
 
-/* 时钟优化 */
+/* 时钟卡片 */
 .clock-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #fff;
-    min-height: 140px; /* 给时钟一个固定高度 */
+    min-height: 140px;
 }
 
 .clock-display {
     font-size: 3rem;
     font-weight: 700;
-    font-family: 'Segoe UI', sans-serif; /* 换个现代字体 */
+    font-family: var(--font-body);
     letter-spacing: 1px;
     margin: 10px 0;
 }
@@ -224,16 +383,14 @@ a:hover {
     opacity: 0.8;
 }
 
-/* 日历优化 */
+/* 日历卡片 */
 .calendar-card {
-    /* 移除背景色定义，已经在 .widget-card 定义了 */
-    /* 关键：允许日历根据内容撑开 */
-    flex: 1; 
-    min-height: 320px; /* 给日历足够的最小高度，确保能放下6行日期 */
+    flex: 1;
+    min-height: 320px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* 顶部对齐 */
-    background: rgba(255, 255, 255, 0.8); /* 稍微不透明一点，保证文字清晰 */
+    justify-content: flex-start;
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .calendar-header {
@@ -249,7 +406,6 @@ a:hover {
 
 .calendar-wrapper {
     width: 100%;
-    /* 确保日历主体部分能占满剩余空间 */
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -268,19 +424,16 @@ a:hover {
 .calendar-dates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    /* 减小行间距，防止过高 */
     gap: 2px;
     text-align: center;
 }
 
 .calendar-date {
     font-size: 0.85rem;
-    /* 调整内边距，使其更紧凑 */
     padding: 6px 0;
     border-radius: 6px;
     color: #555;
-    /* 确保宽高比接近 1:1 或适合显示 */
-    aspect-ratio: 1 / 1; 
+    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -293,10 +446,300 @@ a:hover {
     font-weight: bold;
 }
 
+/* 项目展示区域 */
+.projects-section {
+    padding: 6rem 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.projects-header {
+    margin-bottom: 3rem;
+}
+
+.section-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(107 114 128);
+    margin-bottom: 1rem;
+}
+
+.section-heading {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+@media (min-width: 768px) {
+    .section-heading {
+        font-size: 3rem;
+    }
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-item {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding: 1.5rem 0;
+    display: grid;
+    gap: 1rem;
+    align-items: center;
+    grid-template-columns: 1fr;
+    cursor: pointer;
+    transition: background 300ms;
+}
+
+.project-item:last-child {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.project-item:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+@media (min-width: 768px) {
+    .project-item {
+        grid-template-columns: 80px 1fr auto;
+        padding: 2rem 0;
+    }
+}
+
+.project-num {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: rgb(107 114 128);
+}
+
+.project-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: transform 500ms;
+}
+
+@media (min-width: 768px) {
+    .project-title {
+        font-size: 2rem;
+    }
+}
+
+.project-item:hover .project-title {
+    transform: translateX(10px);
+}
+
+.project-meta-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.project-meta {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(107 114 128);
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .project-meta {
+        display: block;
+    }
+}
+
+.project-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.project-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 300ms;
+}
+
+.project-link:hover {
+    background: var(--c-dark);
+    color: #fff;
+    border-color: var(--c-dark);
+}
+
+/* 技能栈区域 */
+.skills-section {
+    padding: 6rem 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    background: #fafafa;
+}
+
+.skills-header {
+    margin-bottom: 3rem;
+}
+
+.skills-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.skill-card {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.skill-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    transition: transform 500ms;
+}
+
+.skill-card:hover .skill-icon {
+    transform: scale(1.1);
+}
+
+.skill-icon.blue { background: var(--c-blue); }
+.skill-icon.green { background: var(--c-green); }
+.skill-icon.purple { background: var(--c-purple); }
+.skill-icon.orange { background: var(--c-orange); }
+
+.skill-content h3 {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.skill-content p {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.625;
+    color: rgb(75 85 99);
+    margin-bottom: 1rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tags span {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 999px;
+    color: rgb(107 114 128);
+}
+
+/* 页脚 */
+.footer {
+    position: relative;
+    min-height: 60vh;
+    background: #111;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.footer-sticky {
+    text-align: center;
+}
+
+.footer-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(156 163 175);
+    margin-bottom: 2rem;
+}
+
+.footer-cta {
+    font-family: var(--font-display);
+    font-size: 8vw;
+    font-weight: 700;
+    line-height: 0.85;
+    overflow: hidden;
+}
+
+.footer-cta a {
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    transition: color 300ms;
+}
+
+.footer-cta a:hover {
+    color: rgb(156 163 175);
+}
+
+.footer-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-bottom span, .footer-bottom a {
+    font-size: 10px;
+    color: rgb(55 65 81);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.footer-bottom a:hover {
+    color: #9ca3af;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
     .bento-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .hero-title {
+        font-size: 18vw;
+    }
+    
+    .footer-cta {
+        font-size: 12vw;
     }
     
     .profile-card {
@@ -310,10 +753,9 @@ a:hover {
     
     .widget-card {
         min-width: 150px;
-        min-height: 250px; /* 给日历足够的最小高度 */
+        min-height: 250px;
     }
     
-    /* 手机端如果太窄，强制竖排 */
     @media (max-width: 480px) {
         .widgets-column {
             flex-direction: column;
@@ -322,6 +764,24 @@ a:hover {
             min-height: auto;
         }
     }
+}
+
+/* 文字逐字显示动画 */
+.word-wrap {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.word-inner {
+    display: inline-block;
+    transform: translateY(110%);
+}
+
+/* 选中效果 */
+::selection {
+    background: var(--c-dark);
+    color: #fff;
 }
 /* 通用部分样式 */
 .section {

@@ -3,157 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的项目主页 - 个人简历</title>
+    <title>小鑫 — 个人项目主页</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 引入 Font Awesome 图标库 (可选) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Lenis 平滑滚动 -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
 </head>
 <body>
-
-    <!-- Bento Grid 核心区域 (替代原有的 Header 和 About) -->
-    <section class="section bento-section">
-        <div class="container">
-            <div class="bento-grid">
-                
-                <!-- 1. 个人资料主卡片 (Hi Card) -->
-                <div class="bento-card profile-card">
-                    <div class="profile-content">
-                        <div class="greeting-badge">
-                            <span class="wave-emoji">👋</span> Hello, I'm
+    <!-- 噪点叠加层 -->
+    <div class="noise-overlay"></div>
+    
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#profile" onclick="closeMobile()">关于</a>
+        <a href="#projects" onclick="closeMobile()">项目</a>
+        <a href="#skills" onclick="closeMobile()">技能</a>
+        <a href="#contact" onclick="closeMobile()">联系</a>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="nav" id="nav">
+        <span class="nav-logo">小鑫</span>
+        <div class="nav-links">
+            <a href="#profile">关于</a>
+            <a href="#projects">项目</a>
+            <a href="#skills">技能</a>
+            <a href="#contact">联系</a>
+        </div>
+        <button class="menu-btn" id="menuBtn" aria-label="菜单">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="wrapper">
+        
+        <!-- Hero 区域 -->
+        <section class="hero" id="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <h1 class="hero-title"><span>小鑫</span></h1>
+                <p class="hero-sub">全栈开发工程师 · 时间序列研究</p>
+            </div>
+        </section>
+        
+        <!-- 个人资料 Bento Grid -->
+        <section class="section bento-section" id="profile">
+            <div class="container">
+                <div class="bento-grid">
+                    
+                    <!-- 1. 个人资料主卡片 -->
+                    <div class="bento-card profile-card">
+                        <div class="profile-content">
+                            <div class="greeting-badge">
+                                <span class="wave-emoji">👋</span> Hello, I'm
+                            </div>
+                            <h1>小鑫</h1>
+                            <p class="role-text">全栈开发工程师 / 时间序列研究</p>
+                            <p class="bio-text">
+                                我是一名专注于时间序列分析与预测的研究生。
+                                热衷于探索新技术，致力于用代码构建整洁、高效的解决方案。
+                                <br><br>
+                                目前正在寻找 <b>前端开发</b> 或 <b>数据分析</b> 相关的机会。
+                            </p>
+                            <div class="social-row">
+                                <a href="https://github.com/bboyf" target="_blank" class="social-btn github">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                                <a href="mailto:zx1732985615@163.com" class="social-btn email">
+                                    <i class="fas fa-envelope"></i> Email
+                                </a>
+                            </div>
                         </div>
-                        <h1>小鑫</h1>
-                        <p class="role-text">全栈开发工程师 / 时间序列研究</p>
-                        <p class="bio-text">
-                            我是一名专注于时间序列分析与预测的研究生。
-                            热衷于探索新技术，致力于用代码构建整洁、高效的解决方案。
-                            <br><br>
-                            目前正在寻找 <b>前端开发</b> 或 <b>数据分析</b> 相关的机会。
-                        </p>
-                        
-                        <!-- 社交链接集成在卡片内 -->
-                        <div class="social-row">
-                            <a href="https://github.com/bboyf" target="_blank" class="social-btn github">
-                                <i class="fab fa-github"></i> GitHub
-                            </a>
-                            <a href="mailto:zx1732985615@163.com" class="social-btn email">
-                                <i class="fas fa-envelope"></i> Email
-                            </a>
-                            <a href="#" class="social-btn linkedin">
-                                <i class="fab fa-linkedin"></i> LinkedIn
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. 功能组件列 -->
-                <div class="widgets-column">
-                    <!-- 时钟卡片 -->
-                    <div class="bento-card widget-card clock-card">
-                        <div class="card-icon"><i class="far fa-clock"></i></div>
-                        <div class="clock-display" id="clock">00:00</div>
-                        <div class="clock-label">Local Time</div>
                     </div>
                     
-                    <!-- 日历卡片 -->
-                    <div class="bento-card widget-card calendar-card">
-                        <div class="calendar-header">
-                            <span id="calendar-month-year">YYYY/MM</span>
+                    <!-- 2. 功能组件列 -->
+                    <div class="widgets-column">
+                        <!-- 时钟卡片 -->
+                        <div class="bento-card widget-card clock-card">
+                            <div class="card-icon"><i class="far fa-clock"></i></div>
+                            <div class="clock-display" id="clock">00:00</div>
+                            <div class="clock-label">Local Time</div>
                         </div>
-                        <div class="calendar-wrapper">
-                            <div class="calendar-grid-header">
-                                <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                        
+                        <!-- 日历卡片 -->
+                        <div class="bento-card widget-card calendar-card">
+                            <div class="calendar-header">
+                                <span id="calendar-month-year">YYYY/MM</span>
                             </div>
-                            <div id="calendar-dates" class="calendar-dates"></div>
+                            <div class="calendar-wrapper">
+                                <div class="calendar-grid-header">
+                                    <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                                </div>
+                                <div id="calendar-dates" class="calendar-dates"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        
+        <!-- 项目展示 -->
+        <section id="projects" class="section projects-section">
+            <div class="container">
+                <div class="projects-header">
+                    <div>
+                        <p class="section-label">精选项目</p>
+                        <h2 class="section-heading">近期作品</h2>
+                    </div>
+                </div>
+                <div class="projects-list">
+                    
+                    <!-- 项目 1 -->
+                    <div class="project-item">
+                        <span class="project-num">01</span>
+                        <span class="project-title">HarmonyOS 智能记账</span>
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">HarmonyOS · ArkTS · ArkUI</span>
+                            <div class="project-links">
+                                <a href="https://github.com/bboyf/harmonyos-account-app.git" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目 2 -->
+                    <div class="project-item">
+                        <span class="project-num">02</span>
+                        <span class="project-title">Spring Boot 鲜花商城</span>
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Spring Boot · MyBatis · MySQL</span>
+                            <div class="project-links">
+                                <a href="https://github.com/bboyf/springboot-flower-mall.git" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目 3 -->
+                    <div class="project-item">
+                        <span class="project-num">03</span>
+                        <span class="project-title">Django 项目管理系统</span>
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Django · Python · SQLite</span>
+                            <div class="project-links">
+                                <a href="https://github.com/bboyf/Django_project.git" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        
+        <!-- 技能栈 -->
+        <section id="skills" class="section skills-section">
+            <div class="container">
+                <div class="skills-header">
+                    <p class="section-label">技能栈</p>
+                    <h2 class="section-heading">我的工具与能力</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="skill-icon blue"><i class="fas fa-code"></i></div>
+                        <div class="skill-content">
+                            <h3>前端开发</h3>
+                            <p>构建高性能、可访问的现代 Web 应用</p>
+                            <div class="skill-tags">
+                                <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Vue</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon green"><i class="fas fa-server"></i></div>
+                        <div class="skill-content">
+                            <h3>后端开发</h3>
+                            <p>熟悉 Spring Boot、Django 等主流框架</p>
+                            <div class="skill-tags">
+                                <span>Java</span><span>Python</span><span>MySQL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon purple"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="skill-content">
+                            <h3>移动开发</h3>
+                            <p>基于 HarmonyOS 的应用开发经验</p>
+                            <div class="skill-tags">
+                                <span>HarmonyOS</span><span>ArkTS</span><span>ArkUI</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon orange"><i class="fas fa-database"></i></div>
+                        <div class="skill-content">
+                            <h3>数据分析</h3>
+                            <p>时间序列分析与预测相关研究</p>
+                            <div class="skill-tags">
+                                <span>Python</span><span>NumPy</span><span>Pandas</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </section>
-
-    <!-- 项目展示 (核心部分) -->
-    <section id="projects" class="section bg-light">
-        <div class="container">
-            <h2><i class="fas fa-code-branch"></i> 项目展示</h2>
-            <div class="project-grid">
-                <!-- 项目 1 -->
-                <div class="project-card">
-                    <h3>HarmonyOS 智能记账</h3>
-                    <p class="project-desc">基于 HarmonyOS (ArkTS) 开发的分布式记账应用，集成了资产管理、图表统计、聚合登录等模块，支持多设备流转。</p>
-                    <div class="tags">
-                        <span>HarmonyOS</span>
-                        <span>ArkTS</span>
-                        <span>ArkUI</span>
-                    </div>
-                    <div class="project-links">
-                        <!-- 这里暂时放空链接，或者填你的 GitHub 地址 -->
-                        <a href="https://github.com/bboyf/harmonyos-account-app.git" target="_blank"><i class="fab fa-github"></i> 查看源码</a>
-                        <!-- 本地 App 无法在线演示，可以改为“查看截图”或直接移除 -->
-                        <a href="#" class="disabled"><i class="fas fa-mobile-alt"></i> 仅本地运行</a>
-                    </div>
-                </div>
-
-                <!-- 项目 2 -->
-                <div class="project-card">
-                    <h3>Spring Boot 鲜花商城</h3>
-                    <p class="project-desc">基于 Spring Boot 和 MyBatis 构建的B2C鲜花电商平台，实现了商品展示、购物车、订单管理、用户评价及后台权限管理。</p>
-                    <div class="tags">
-                        <span>Spring Boot</span>
-                        <span>MyBatis</span>
-                        <span>MySQL</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/bboyf/springboot-flower-mall.git" target="_blank"><i class="fab fa-github"></i> 查看源码</a>
-                        <a href="#" class="disabled"><i class="fas fa-server"></i> 仅本地运行</a>
-                    </div>
-                </div>
-
-                <!-- 项目 3 -->
-                <div class="project-card">
-                    <h3>智能任务清单 App</h3>
-                    <p class="project-desc">一款跨平台的任务管理应用，支持语音输入和云端同步。</p>
-                    <div class="tags">
-                        <span>Flutter</span>
-                        <span>Firebase</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="#">查看源码</a>
-                        <a href="#">在线演示</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 技能栈 -->
-    <section id="skills" class="section">
-        <div class="container">
-            <h2><i class="fas fa-tools"></i> 技能栈</h2>
-            <div class="skills-list">
-                <div class="skill-item">HTML5 & CSS3</div>
-                <div class="skill-item">JavaScript (ES6+)</div>
-                <div class="skill-item">React / Vue</div>
-                <div class="skill-item">Python</div>
-                <div class="skill-item">Git & GitHub</div>
-                <div class="skill-item">Docker</div>
-            </div>
-        </div>
-    </section>
-
+        </section>
+        
+    </div>
+    
     <!-- 页脚 -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 小鑫. All rights reserved.</p>
-            <p>Powered by <a href="https://pages.github.com/">GitHub Pages</a></p>
+    <footer class="footer" id="contact">
+        <div class="footer-sticky">
+            <p class="footer-label">准备好了吗</p>
+            <div class="footer-cta">
+                <a href="mailto:zx1732985615@163.com">联系我</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2024 小鑫. All rights reserved.</span>
+            <div class="footer-links">
+                <a href="https://github.com/bboyf" target="_blank">GitHub</a>
+                <a href="mailto:zx1732985615@163.com">Email</a>
+            </div>
         </div>
     </footer>
-
-    <!-- 引入自定义脚本 -->
+    
     <script src="script.js"></script>
-
-    <!-- 引入自定义脚本 -->
-    <script src="script.js"></script>
-
 </body>
 </html>
