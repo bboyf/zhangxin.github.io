@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陈默 — 创意开发者</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --c-bg: #E3E1DC;
+      --c-dark: #121212;
+      --c-blue: #2563eb;
+      --c-red: #dc2626;
+      --c-green: #16a34a;
+      --font-display: 'Syncopate', sans-serif;
+      --font-body: 'Manrope', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { font-family: var(--font-body); color: var(--c-dark); }
+
+    body { background: var(--c-dark); }
+
+    /* Noise overlay */
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      opacity: 0.04; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Preloader */
+    .loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--c-dark);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .loader-bar-track {
+      width: 200px; height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px; overflow: hidden;
+      margin-top: 1.5rem;
+    }
+    .loader-bar {
+      width: 0%; height: 100%;
+      background: #fff; border-radius: 2px;
+    }
+    .loader-text {
+      font-family: var(--font-display);
+      color: #fff; font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+    .loader-panel {
+      position: absolute; inset: 0;
+      background: var(--c-dark);
+      transform-origin: bottom;
+    }
+
+    /* Wrapper */
+    .wrapper {
+      position: relative; z-index: 10;
+      background: var(--c-bg);
+      margin-bottom: 100vh;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50; padding: 2rem;
+      mix-blend-mode: difference;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav a, .nav span, .nav button {
+      color: #fff; font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: opacity 150ms;
+      cursor: pointer; background: none; border: none;
+      font-family: var(--font-body);
+    }
+    .nav a:hover, .nav button:hover { opacity: 0.6; }
+
+    /* Hero */
+    .hero {
+      height: 100vh; position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.75);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; mix-blend-mode: difference;
+      color: #fff;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 12vw; font-weight: 700;
+      line-height: 1; overflow: hidden;
+    }
+    .hero-title span { display: inline-block; transform: translateY(110%); }
+    .hero-sub {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; opacity: 0;
+      margin-top: 1.5rem;
+    }
+
+    /* Intro */
+    .intro {
+      padding: 8rem 1.5rem;
+    }
+    @media(min-width:768px) { .intro { padding: 8rem 5rem; } }
+
+    .intro-grid {
+      display: grid; gap: 4rem;
+      max-width: 1800px; margin: 0 auto;
+    }
+    @media(min-width:768px) {
+      .intro-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .intro-left {
+      display: flex; flex-direction: column;
+      justify-content: flex-start;
+    }
+    @media(min-width:768px) {
+      .intro-left { position: sticky; top: 10vh; }
+    }
+
+    .intro-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgb(107 114 128);
+      margin-bottom: 2rem;
+    }
+    .intro-heading {
+      font-family: var(--font-display);
+      font-size: 2.25rem; font-weight: 400;
+      line-height: 1.25;
+    }
+    @media(min-width:768px) { .intro-heading { font-size: 3rem; } }
+    @media(min-width:1024px) { .intro-heading { font-size: 3.75rem; } }
+
+    .intro-right { display: flex; flex-direction: column; gap: 4rem; }
+
+    .intro-item { }
+    .intro-item-num {
+      font-family: var(--font-display);
+      font-size: 3rem; font-weight: 700;
+      color: rgb(209 213 219);
+      margin-bottom: 1.5rem;
+    }
+    .intro-item h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem; font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .intro-item p {
+      font-size: 1.125rem; font-weight: 300;
+      line-height: 1.625; color: rgb(75 85 99);
+    }
+
+    /* Word reveal */
+    .word-wrap { overflow: hidden; display: inline-block; vertical-align: bottom; }
+    .word-inner { display: inline-block; transform: translateY(110%); }
+
+    /* Stack */
+    .stack {
+      padding: 8rem 1.5rem;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    @media(min-width:768px) { .stack { padding: 8rem 5rem; } }
+
+    .stack-header {
+      max-width: 1800px; margin: 0 auto 4rem;
+    }
+    .stack-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgb(107 114 128);
+      margin-bottom: 1.5rem;
+    }
+    .stack-heading {
+      font-family: var(--font-display);
+      font-size: 2.25rem; font-weight: 400;
+      line-height: 1.25;
+    }
+    @media(min-width:768px) { .stack-heading { font-size: 3rem; } }
+    @media(min-width:1024px) { .stack-heading { font-size: 3.75rem; } }
+
+    .stack-grid {
+      display: grid; gap: 2rem;
+      max-width: 1800px; margin: 0 auto;
+    }
+    @media(min-width:768px) { .stack-grid { grid-template-columns: 1fr 1fr; } }
+
+    .stack-card {
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding-top: 2rem;
+      display: flex; align-items: flex-start; gap: 1.5rem;
+    }
+    .stack-card-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 500ms;
+    }
+    .stack-card:hover .stack-card-icon { transform: scale(1.1); }
+
+    .stack-card-icon.blue { background: var(--c-blue); color: #fff; }
+    .stack-card-icon.red { background: var(--c-red); color: #fff; }
+    .stack-card-icon.green { background: var(--c-green); color: #fff; }
+    .stack-card-icon.dark { background: var(--c-dark); color: #fff; }
+
+    .stack-card-content h3 {
+      font-family: var(--font-display);
+      font-size: 0.875rem; font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .stack-card-content p {
+      font-size: 1rem; font-weight: 300;
+      line-height: 1.625; color: rgb(75 85 99);
+    }
+    .stack-card-tags {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .stack-card-tag {
+      font-size: 0.6875rem; text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 999px;
+      color: rgb(107 114 128);
+    }
+
+    /* Projects */
+    .projects {
+      padding: 8rem 1.5rem;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    @media(min-width:768px) { .projects { padding: 8rem 5rem; } }
+
+    .projects-header {
+      max-width: 1800px; margin: 0 auto 4rem;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .projects-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgb(107 114 128);
+      margin-bottom: 1.5rem;
+    }
+    .projects-heading {
+      font-family: var(--font-display);
+      font-size: 2.25rem; font-weight: 400; line-height: 1.25;
+    }
+    @media(min-width:768px) { .projects-heading { font-size: 3rem; } }
+    @media(min-width:1024px) { .projects-heading { font-size: 3.75rem; } }
+
+    .projects-list {
+      max-width: 1800px; margin: 0 auto;
+      display: flex; flex-direction: column;
+    }
+    .project-item {
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding: 2rem 0;
+      display: grid; gap: 1rem;
+      align-items: center;
+      grid-template-columns: 1fr;
+      cursor: pointer;
+      transition: background 300ms;
+    }
+    @media(min-width:768px) {
+      .project-item {
+        grid-template-columns: 1fr 2fr 1fr;
+        padding: 3rem 0;
+      }
+    }
+    .project-item:last-child {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    .project-item:hover { background: rgba(0,0,0,0.02); }
+
+    .project-num {
+      font-family: var(--font-display);
+      font-size: 0.75rem; color: rgb(107 114 128);
+    }
+    .project-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem; font-weight: 700;
+      transition: transform 500ms;
+    }
+    @media(min-width:768px) { .project-title { font-size: 2.25rem; } }
+    .project-item:hover .project-title { transform: translateX(20px); }
+
+    .project-meta {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgb(107 114 128);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .project-arrow {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 500ms, background 500ms;
+      flex-shrink: 0;
+    }
+    .project-item:hover .project-arrow {
+      transform: rotate(-45deg);
+      background: var(--c-dark); color: #fff;
+      border-color: var(--c-dark);
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 100vh; z-index: 1;
+      background: #111; color: #fff;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .footer-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.1; pointer-events: none;
+    }
+    .footer-sticky {
+      position: relative; z-index: 2;
+      text-align: center;
+    }
+    .footer-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgb(156 163 175);
+      margin-bottom: 2rem;
+    }
+    .footer-cta {
+      font-family: var(--font-display);
+      font-size: 8vw; font-weight: 700;
+      line-height: 0.85;
+      overflow: hidden;
+    }
+    .footer-cta a {
+      color: #fff; text-decoration: none;
+      display: inline-block;
+      transition: color 300ms;
+    }
+    .footer-cta a:hover { color: rgb(156 163 175); }
+
+    .footer-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 2;
+    }
+    .footer-bottom span, .footer-bottom a {
+      font-size: 10px; color: rgb(55 65 81);
+      text-decoration: none; text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .footer-bottom a:hover { color: #9ca3af; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--c-dark); color: #fff;
+      padding: 1rem 2rem; border-radius: 8px;
+      font-size: 0.875rem; z-index: 9500;
+      opacity: 0; pointer-events: none;
+      transition: transform 500ms cubic-bezier(0.22,1,0.36,1), opacity 500ms;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile nav */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 100;
+      background: var(--c-dark);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2rem;
+      transform: translateY(-100%);
+      transition: transform 700ms cubic-bezier(0.22,1,0.36,1);
+    }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      color: #fff; font-size: 1.5rem;
+      text-decoration: none; text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: opacity 300ms;
+    }
+    .mobile-menu a:hover { opacity: 0.6; }
+
+    /* Selection */
+    ::selection { background: var(--c-dark); color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- Noise -->
+  <div class="noise-overlay"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Preloader -->
+  <div class="loader" id="loader">
+    <div class="loader-text" id="loader-text">0%</div>
+    <div class="loader-bar-track">
+      <div class="loader-bar" id="loader-bar"></div>
+    </div>
+    <div class="loader-panel" id="loader-panel"></div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#intro" onclick="closeMobile()">关于</a>
+    <a href="#stack" onclick="closeMobile()">技能</a>
+    <a href="#projects" onclick="closeMobile()">项目</a>
+    <a href="#contact" onclick="closeMobile()">联系</a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <span style="font-family: var(--font-display); font-weight:700; font-size:0.875rem;">CM.</span>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#intro">关于</a>
+      <a href="#stack">技能</a>
+      <a href="#projects">项目</a>
+      <a href="#contact">联系</a>
+    </div>
+    <button class="md:hidden" id="menuBtn" aria-label="菜单">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav>
+
+  <!-- Wrapper -->
+  <div class="wrapper">
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <img class="hero-img" src="https://picsum.photos/seed/hero-dark-city/1920/1080.jpg" alt="Hero Background">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span>陈默</span>
+        </h1>
+        <p class="hero-sub">创意开发者 · 设计工程师</p>
+      </div>
+    </section>
+
+    <!-- Intro -->
+    <section class="intro" id="intro">
+      <div class="intro-grid">
+        <div class="intro-left">
+          <p class="intro-label">关于我</p>
+          <h2 class="intro-heading reveal-text">在代码与设计之间，寻找表达的边界</h2>
+        </div>
+        <div class="intro-right">
+
+          <div class="intro-item">
+            <div class="intro-item-num">01</div>
+            <h3>创意开发</h3>
+            <p>我相信技术是创意的延伸。八年来，我专注于将复杂的交互想法转化为流畅的数字体验，从微妙的悬停反馈到沉浸式的 WebGL 场景，每一个像素都经过精心雕琢。</p>
+          </div>
+
+          <div class="intro-item">
+            <div class="intro-item-num">02</div>
+            <h3>设计工程</h3>
+            <p>我游走于设计与工程的交界地带，能够精确还原设计稿的每一个细节，同时理解设计师的意图与用户的期望。这不是像素级还原，而是意图级还原。</p>
+          </div>
+
+          <div class="intro-item">
+            <div class="intro-item-num">03</div>
+            <h3>持续探索</h3>
+            <p>从 Three.js 到 shader 编程，从动态排版到生成艺术，我持续探索前端技术的可能性边界。最好的作品永远是下一个。</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Stack -->
+    <section class="stack" id="stack">
+      <div class="stack-header">
+        <p class="stack-label">技能栈</p>
+        <h2 class="stack-heading reveal-text">我的工具与能力</h2>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-card">
+          <div class="stack-card-icon blue"><i class="fas fa-code"></i></div>
+          <div class="stack-card-content">
+            <h3>前端开发</h3>
+            <p>构建高性能、可访问的现代 Web 应用，注重代码质量与用户体验的每一个细节。</p>
+            <div class="stack-card-tags">
+              <span class="stack-card-tag">React</span>
+              <span class="stack-card-tag">Vue</span>
+              <span class="stack-card-tag">TypeScript</span>
+              <span class="stack-card-tag">Next.js</span>
+              <span class="stack-card-tag">Tailwind</span>
+            </div>
+          </div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-card-icon red"><i class="fas fa-cube"></i></div>
+          <div class="stack-card-content">
+            <h3>创意编程</h3>
+            <p>利用 WebGL 和 GPU 着色器创造视觉冲击力强的交互式 3D 体验与生成艺术。</p>
+            <div class="stack-card-tags">
+              <span class="stack-card-tag">Three.js</span>
+              <span class="stack-card-tag">GLSL</span>
+              <span class="stack-card-tag">Canvas</span>
+              <span class="stack-card-tag">p5.js</span>
+            </div>
+          </div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-card-icon green"><i class="fas fa-bezier-curve"></i></div>
+          <div class="stack-card-content">
+            <h3>动效设计</h3>
+            <p>精心编排的页面转场、滚动驱动动画与微交互，让界面拥有呼吸感和叙事节奏。</p>
+            <div class="stack-card-tags">
+              <span class="stack-card-tag">GSAP</span>
+              <span class="stack-card-tag">Framer Motion</span>
+              <span class="stack-card-tag">Lenis</span>
+              <span class="stack-card-tag">Lottie</span>
+            </div>
+          </div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-card-icon dark"><i class="fas fa-pen-nib"></i></div>
+          <div class="stack-card-content">
+            <h3>设计协作</h3>
+            <p>从 Figma 到代码的高效交付流程，具备设计系统思维，能与设计团队无缝协作。</p>
+            <div class="stack-card-tags">
+              <span class="stack-card-tag">Figma</span>
+              <span class="stack-card-tag">Design System</span>
+              <span class="stack-card-tag">UI/UX</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects" id="projects">
+      <div class="projects-header">
+        <div>
+          <p class="projects-label">精选项目</p>
+          <h2 class="projects-heading reveal-text">近期作品</h2>
+        </div>
+      </div>
+      <div class="projects-list">
+        <div class="project-item" onclick="showToast('项目详情页开发中…')">
+          <span class="project-num">01</span>
+          <span class="project-title">量子粒子实验室</span>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="project-meta">Three.js · GLSL</span>
+            <span class="project-arrow"><i class="fas fa-arrow-right" style="font-size:0.75rem;"></i></span>
+          </div>
+        </div>
+        <div class="project-item" onclick="showToast('项目详情页开发中…')">
+          <span class="project-num">02</span>
+          <span class="project-title">潮汐音乐可视化</span>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="project-meta">Web Audio · Canvas</span>
+            <span class="project-arrow"><i class="fas fa-arrow-right" style="font-size:0.75rem;"></i></span>
+          </div>
+        </div>
+        <div class="project-item" onclick="showToast('项目详情页开发中…')">
+          <span class="project-num">03</span>
+          <span class="project-title">NOIR 品牌官网</span>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="project-meta">Next.js · GSAP</span>
+            <span class="project-arrow"><i class="fas fa-arrow-right" style="font-size:0.75rem;"></i></span>
+          </div>
+        </div>
+        <div class="project-item" onclick="showToast('项目详情页开发中…')">
+          <span class="project-num">04</span>
+          <span class="project-title">生成式海报系统</span>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="project-meta">p5.js · 算法设计</span>
+            <span class="project-arrow"><i class="fas fa-arrow-right" style="font-size:0.75rem;"></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /wrapper -->
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <img class="footer-bg" src="https://picsum.photos/seed/footer-abstract/1920/1080.jpg" alt="">
+    <div class="footer-sticky">
+      <p class="footer-label">准备好了吗</p>
+      <div class="footer-cta" id="footerCta">
+        <a href="mailto:hello@chenmo.dev">一起创造</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 陈默</span>
+      <div class="footer-links">
+        <a href="#" onclick="event.preventDefault();showToast('GitHub 主页跳转中…')">GitHub</a>
+        <a href="#" onclick="event.preventDefault();showToast('Twitter 主页跳转中…')">Twitter</a>
+        <a href="#" onclick="event.preventDefault();showToast('Dribbble 主页跳转中…')">Dribbble</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Toast ───
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ─── Mobile Menu ───
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      menuBtn.innerHTML = menuOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+    });
+    function closeMobile() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    }
+
+    // ─── Lenis Smooth Scroll ───
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      smooth: true
+    });
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id === '#') return;
+        const target = document.querySelector(id);
+        if (target) {
+          e.preventDefault();
+          lenis.scrollTo(target, { offset: -60 });
+        }
+      });
+    });
+
+    // ─── GSAP + ScrollTrigger ───
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Sync Lenis with ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    // ─── Preloader ───
+    const loaderTl = gsap.timeline({
+      onComplete: initPage
+    });
+
+    // Counter
+    const loaderText = document.getElementById('loader-text');
+    const loaderBar = document.getElementById('loader-bar');
+    loaderTl.to(loaderText, {
+      innerText: 100,
+      duration: 1.5,
+      snap: { innerText: 1 },
+      ease: 'power2.inOut',
+      onUpdate() {
+        loaderText.textContent = Math.round(parseFloat(loaderText.innerText)) + '%';
+      }
+    });
+    loaderTl.to(loaderBar, { width: '100%', duration: 1.5, ease: 'power2.inOut' }, '<');
+    loaderTl.to('#loader-panel', { yPercent: -100, duration: 1, ease: 'power4.inOut' }, '+=0.2');
+
+    function initPage() {
+      document.getElementById('loader').style.display = 'none';
+
+      // Hero animations
+      gsap.to('.hero-title span', {
+        y: 0, stagger: 0.1, duration: 1.5, ease: 'power4.out'
+      });
+      gsap.to('.hero-sub', {
+        opacity: 1, duration: 1, delay: 0.5
+      });
+
+      // Hero parallax
+      gsap.to('.hero-img', {
+        yPercent: 30, ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true
+        }
+      });
+
+      // Word reveal
+      document.querySelectorAll('.reveal-text').forEach(el => {
+        const text = el.textContent;
+        el.innerHTML = '';
+        text.split('').forEach(char => {
+          if (char === ' ') {
+            el.innerHTML += ' ';
+          } else {
+            el.innerHTML += `<span class="word-wrap"><span class="word-inner">${char}</span></span>`;
+          }
+        });
+        gsap.to(el.querySelectorAll('.word-inner'), {
+          y: '0%', duration: 1, ease: 'power3.out', stagger: 0.02,
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // Intro items fade
+      gsap.utils.toArray('.intro-item').forEach((item, i) => {
+        gsap.from(item, {
+          opacity: 0, y: 60, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: item, start: 'top 85%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // Stack cards fade
+      gsap.utils.toArray('.stack-card').forEach(card => {
+        gsap.from(card, {
+          opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // Project items fade
+      gsap.utils.toArray('.project-item').forEach(item => {
+        gsap.from(item, {
+          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: item, start: 'top 90%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // Footer CTA parallax
+      gsap.from('#footerCta', {
+        y: 60, opacity: 0.5, scale: 0.9,
+        scrollTrigger: {
+          trigger: '.footer', start: 'top bottom', end: 'bottom bottom', scrub: true
+        }
+      });
+    }
+  </script>
+</body>
+</html>
