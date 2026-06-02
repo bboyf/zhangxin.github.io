@@ -2,6 +2,8 @@
 flowers/
 Django_project/
 homework_end/
+djangoFilm（图书推荐）/
+vip_homework/
 
 # 忽略系统文件
 .DS_Store
