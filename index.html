@@ -1,118 +1,158 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="no-js">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小鑫 — 个人项目主页</title>
+    <title>小鑫 — Agent 应用开发 / 时间序列研究</title>
+    <meta name="description" content="小鑫的个人主页。专注于 Agent 应用开发与时间序列分析研究，项目涵盖 HarmonyOS 应用、Django / Spring Boot 后端系统与人脸识别监控。">
+    <meta name="author" content="小鑫">
+    <meta name="theme-color" content="#121212">
+    <link rel="canonical" href="https://bboyf.github.io/zhangxin.github.io/">
+
+    <!-- 社交分享卡片 -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="小鑫 · 个人主页">
+    <meta property="og:title" content="小鑫 — Agent 应用开发 / 时间序列研究">
+    <meta property="og:description" content="专注于 Agent 应用开发与时间序列分析研究。项目涵盖 HarmonyOS 应用、Django / Spring Boot 后端系统与人脸识别监控。">
+    <meta property="og:url" content="https://bboyf.github.io/zhangxin.github.io/">
+    <meta property="og:image" content="https://bboyf.github.io/zhangxin.github.io/assets/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="zh_CN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="小鑫 — Agent 应用开发 / 时间序列研究">
+    <meta name="twitter:description" content="专注于 Agent 应用开发与时间序列分析研究。项目涵盖 HarmonyOS 应用、Django / Spring Boot 后端系统与人脸识别监控。">
+    <meta name="twitter:image" content="https://bboyf.github.io/zhangxin.github.io/assets/og-card.png">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121212'/%3E%3Ctext x='50' y='52' font-family='Microsoft YaHei,PingFang SC,sans-serif' font-size='58' font-weight='700' fill='%23ffffff' text-anchor='middle' dominant-baseline='central'%3E%E9%91%AB%3C/text%3E%3C/svg%3E">
+
+    <!-- 字体与动画库均已本地化，不依赖任何境外 CDN -->
+    <link rel="stylesheet" href="vendor/fonts.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- GSAP 动画库 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- Lenis 平滑滚动 -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="vendor/gsap.min.js"></script>
+    <script src="vendor/ScrollTrigger.min.js"></script>
+    <script src="vendor/lenis.min.js"></script>
+    <script>
+        /* 三套动画库全部就位才启用入场动画；任一缺失则保留 no-js，文字直接可见 */
+        if (window.gsap && window.ScrollTrigger && window.Lenis) {
+            document.documentElement.classList.remove('no-js');
+            document.documentElement.classList.add('js');
+        }
+    </script>
 </head>
 <body>
+    <!-- 图标精灵（替代 Font Awesome，全站零图标字体依赖） -->
+    <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+        <symbol id="i-github" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.44-.5L12 11.06 19.56 5H4.44Z"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 6.6V12l3.6 2.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4Zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4Z"/></symbol>
+        <symbol id="i-server" viewBox="0 0 24 24"><path d="M3 3.5h18a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5Zm0 11h18a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5Zm3-8.5h2v1.5H6V6Zm0 11h2v1.5H6V17Z"/></symbol>
+        <symbol id="i-mobile" viewBox="0 0 24 24"><path d="M7 1.5h10A2.5 2.5 0 0 1 19.5 4v16a2.5 2.5 0 0 1-2.5 2.5H7A2.5 2.5 0 0 1 4.5 20V4A2.5 2.5 0 0 1 7 1.5Zm3 17.2a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></symbol>
+        <symbol id="i-db" viewBox="0 0 24 24"><path d="M12 1.5c4.5 0 8 1.4 8 3.2s-3.5 3.2-8 3.2-8-1.4-8-3.2S7.5 1.5 12 1.5Zm8 8.4v3.4c0 1.8-3.5 3.2-8 3.2s-8-1.4-8-3.2V9.9c1.8 1.4 4.8 2.1 8 2.1s6.2-.7 8-2.1Zm0 6.6V20c0 1.8-3.5 3.2-8 3.2S4 21.8 4 20v-3.5c1.8 1.4 4.8 2.1 8 2.1s6.2-.7 8-2.1Z"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M13.2 5.2 20 12l-6.8 6.8-1.4-1.4 4.4-4.4H4v-2h12.2L11.8 6.6l1.4-1.4Z"/></symbol>
+        <symbol id="i-bars" viewBox="0 0 24 24"><path d="M3 5.5h18v2.2H3V5.5Zm0 5.4h18v2.2H3v-2.2Zm0 5.4h18v2.2H3v-2.2Z"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M13.41 12l5.3-5.29-1.42-1.42L12 10.59 6.71 5.29 5.29 6.71 10.59 12l-5.3 5.29 1.42 1.42L12 13.41l5.29 5.3 1.42-1.42L13.41 12Z"/></symbol>
+    </svg>
+
     <!-- 噪点叠加层 -->
-    <div class="noise-overlay"></div>
-    
+    <div class="noise-overlay" aria-hidden="true"></div>
+
     <!-- Toast 提示 -->
-    <div class="toast" id="toast"></div>
-    
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <!-- 移动端菜单 -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="#profile" onclick="closeMobile()">关于</a>
-        <a href="#projects" onclick="closeMobile()">项目</a>
-        <a href="#skills" onclick="closeMobile()">技能</a>
-        <a href="#contact" onclick="closeMobile()">联系</a>
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+        <a href="#profile" data-close-mobile>关于</a>
+        <a href="#projects" data-close-mobile>项目</a>
+        <a href="#skills" data-close-mobile>技能</a>
+        <a href="#contact" data-close-mobile>联系</a>
     </div>
-    
+
     <!-- 导航栏 -->
     <nav class="nav" id="nav">
-        <span class="nav-logo">小鑫</span>
+        <a class="nav-logo" href="#hero">小鑫</a>
         <div class="nav-links">
             <a href="#profile">关于</a>
             <a href="#projects">项目</a>
             <a href="#skills">技能</a>
             <a href="#contact">联系</a>
         </div>
-        <button class="menu-btn" id="menuBtn" aria-label="菜单">
-            <i class="fas fa-bars"></i>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobileMenu">
+            <svg class="ico" aria-hidden="true"><use href="#i-bars"/></svg>
         </button>
     </nav>
-    
+
     <!-- 主内容区 -->
     <div class="wrapper">
-        
+
         <!-- Hero 区域 -->
         <section class="hero" id="hero">
-            <div class="hero-bg"></div>
+            <div class="hero-bg" aria-hidden="true"></div>
             <div class="hero-content">
                 <h1 class="hero-title"><span>小鑫</span></h1>
-                <p class="hero-sub">agent应用开发· 时间序列研究</p>
+                <p class="hero-sub">Agent 应用开发 · 时间序列研究</p>
             </div>
         </section>
-        
+
         <!-- 个人资料 Bento Grid -->
         <section class="section bento-section" id="profile">
             <div class="container">
                 <div class="bento-grid">
-                    
+
                     <!-- 1. 个人资料主卡片 -->
                     <div class="bento-card profile-card">
                         <div class="profile-content">
                             <div class="greeting-badge">
-                                <span class="wave-emoji">👋</span> Hello, I'm
+                                <span class="wave-emoji" aria-hidden="true">👋</span> Hello, I'm
                             </div>
-                            <h1>小鑫</h1>
-                            <p class="role-text">agent应用开发 / 时间序列研究</p>
+                            <h2 class="profile-name">小鑫</h2>
+                            <p class="role-text">Agent 应用开发 / 时间序列研究</p>
                             <p class="bio-text">
-                                我是一名专注于时间序列分析与预测的研究生。
-                                热衷于探索新技术，致力于用代码构建整洁、高效的解决方案。
+                                研究生在读，方向是时间序列分析与预测。
+                                平时喜欢把想法做成能跑起来的东西 —— 从鸿蒙 App、Django / Spring Boot 后端，
+                                到基于大模型的 Agent 应用。
                                 <br><br>
-                                目前正在寻找 <b>agent应用开发</b> 或 <b>数据分析</b> 相关的机会。
+                                目前正在寻找 <b>Agent 应用开发</b> 或 <b>数据分析 / 算法</b> 相关的机会。
                             </p>
                             <div class="social-row">
-                                <a href="https://github.com/bboyf" target="_blank" class="social-btn github">
-                                    <i class="fab fa-github"></i> GitHub
+                                <a href="https://github.com/bboyf" target="_blank" rel="noopener noreferrer" class="social-btn github">
+                                    <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg> GitHub
                                 </a>
                                 <a href="mailto:zx1732985615@163.com" class="social-btn email">
-                                    <i class="fas fa-envelope"></i> Email
+                                    <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg> Email
                                 </a>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- 2. 功能组件列 -->
                     <div class="widgets-column">
                         <!-- 时钟卡片 -->
                         <div class="bento-card widget-card clock-card">
-                            <div class="card-icon"><i class="far fa-clock"></i></div>
-                            <div class="clock-display" id="clock">00:00</div>
+                            <div class="card-icon"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></div>
+                            <div class="clock-display" id="clock" aria-label="当前本地时间">00:00</div>
                             <div class="clock-label">Local Time</div>
                         </div>
-                        
+
                         <!-- 日历卡片 -->
                         <div class="bento-card widget-card calendar-card">
                             <div class="calendar-header">
                                 <span id="calendar-month-year">YYYY/MM</span>
                             </div>
                             <div class="calendar-wrapper">
-                                <div class="calendar-grid-header">
+                                <div class="calendar-grid-header" aria-hidden="true">
                                     <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
                                 </div>
                                 <div id="calendar-dates" class="calendar-dates"></div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </section>
-        
+
         <!-- 项目展示 -->
         <section id="projects" class="section projects-section">
             <div class="container">
@@ -123,81 +163,89 @@
                     </div>
                 </div>
                 <div class="projects-list">
-                    
+
                     <!-- 项目 1 -->
-                    <div class="project-item">
+                    <a class="project-item" href="https://github.com/bboyf/world-cup-prediction" target="_blank" rel="noopener noreferrer">
                         <span class="project-num">01</span>
-                        <span class="project-title">HarmonyOS 智能记账</span>
-                        <div class="project-meta-wrapper">
-                            <span class="project-meta">HarmonyOS · ArkTS · ArkUI</span>
-                            <div class="project-links">
-                                <a href="https://github.com/bboyf/harmonyos-account-app.git" target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                        <div class="project-main">
+                            <h3 class="project-title">2026 世界杯 AI 预测引擎</h3>
+                            <p class="project-desc-line">基于 DeepSeek 的比赛预测系统：四层约束架构（资料库锁死 + 方法论固化 + 输出契约 + 动态更新）保证预测可复现，GitHub Actions 每日自动拉取数据更新情报，输出比分、胜率与关键因素。</p>
                         </div>
-                    </div>
-                    
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Python · FastAPI · DeepSeek · GitHub Actions</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
                     <!-- 项目 2 -->
-                    <div class="project-item">
+                    <a class="project-item" href="https://github.com/bboyf/Monitoring-system" target="_blank" rel="noopener noreferrer">
                         <span class="project-num">02</span>
-                        <span class="project-title">Spring Boot 鲜花商城</span>
-                        <div class="project-meta-wrapper">
-                            <span class="project-meta">Spring Boot · MyBatis · MySQL</span>
-                            <div class="project-links">
-                                <a href="https://github.com/bboyf/springboot-flower-mall.git" target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                        <div class="project-main">
+                            <h3 class="project-title">人脸识别监控系统</h3>
+                            <p class="project-desc-line">基于 dlib ResNet 深度学习模型的实时视频人脸识别系统，README 中标注识别准确率 99.38%；内置摄像头权限自检与一键启动脚本，降低部署门槛。</p>
                         </div>
-                    </div>
-                    
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Django · dlib ResNet · OpenCV</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
                     <!-- 项目 3 -->
-                    <div class="project-item">
+                    <a class="project-item" href="https://github.com/bboyf/harmonyos-account-app" target="_blank" rel="noopener noreferrer">
                         <span class="project-num">03</span>
-                        <span class="project-title">Django 项目管理系统</span>
-                        <div class="project-meta-wrapper">
-                            <span class="project-meta">Django · Python · SQLite</span>
-                            <div class="project-links">
-                                <a href="https://github.com/bboyf/Django_project.git" target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                        <div class="project-main">
+                            <h3 class="project-title">HarmonyOS 智能记账 MoneyTrack</h3>
+                            <p class="project-desc-line">鸿蒙记账应用，采用「分层解耦」四层架构与五个可复用组件，实现账单全生命周期管理、多维图表统计与 AI 智能记账；纯本地数据库存储，适配 HarmonyOS 5.0.2 及以上与折叠屏。</p>
                         </div>
-                    </div>
-                    
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">ArkTS · ArkUI · HarmonyOS</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
                     <!-- 项目 4 -->
-                    <div class="project-item">
+                    <a class="project-item" href="https://github.com/bboyf/springboot-flower-mall" target="_blank" rel="noopener noreferrer">
                         <span class="project-num">04</span>
-                        <span class="project-title">Django 图书推荐系统</span>
-                        <div class="project-meta-wrapper">
-                            <span class="project-meta">Django · Spark · Redis · 协同过滤</span>
-                            <div class="project-links">
-                                <a href="https://github.com/bboyf/Django-recommendation.git" target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                        <div class="project-main">
+                            <h3 class="project-title">Spring Boot 鲜花商城推荐与秒杀系统</h3>
+                            <p class="project-desc-line">B2C 鲜花电商平台，前台用户端 + 后台管理端双端完整业务流；集成基于用户行为的协同过滤推荐与限时秒杀模块，覆盖浏览、购物车、下单、评价全流程。</p>
                         </div>
-                    </div>
-                    
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Spring Boot · MyBatis · Thymeleaf · MySQL</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
                     <!-- 项目 5 -->
-                    <div class="project-item">
+                    <a class="project-item" href="https://github.com/bboyf/Django_project" target="_blank" rel="noopener noreferrer">
                         <span class="project-num">05</span>
-                        <span class="project-title">人脸识别监控系统</span>
-                        <div class="project-meta-wrapper">
-                            <span class="project-meta">Django · dlib · OpenCV · 深度学习</span>
-                            <div class="project-links">
-                                <a href="https://github.com/bboyf/Monitoring-system.git" target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                        <div class="project-main">
+                            <h3 class="project-title">Django 投票与教务管理系统</h3>
+                            <p class="project-desc-line">包含注册 / 登录（图形验证码）的用户认证体系、投票创建与结果统计、学科与教师信息展示，数据管理侧基于 Django Admin 快速搭建。</p>
                         </div>
-                    </div>
-                    
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Django · SQLite · django-simple-captcha</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
+                    <!-- 项目 6 -->
+                    <a class="project-item" href="https://github.com/bboyf/Django-recommendation" target="_blank" rel="noopener noreferrer">
+                        <span class="project-num">06</span>
+                        <div class="project-main">
+                            <h3 class="project-title">DjangoFilm 图书推荐系统</h3>
+                            <p class="project-desc-line">基于 Apache Spark 协同过滤的个性化图书推荐平台，支持按书名 / 价格 / 评分多条件筛选、CSV 批量导入图书数据，Redis 做缓存加速。</p>
+                        </div>
+                        <div class="project-meta-wrapper">
+                            <span class="project-meta">Django · Spark · Redis</span>
+                            <span class="project-link"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </div>
+                    </a>
+
                 </div>
             </div>
         </section>
-        
+
         <!-- 技能栈 -->
         <section id="skills" class="section skills-section">
             <div class="container">
@@ -207,68 +255,68 @@
                 </div>
                 <div class="skills-grid">
                     <div class="skill-card">
-                        <div class="skill-icon blue"><i class="fas fa-code"></i></div>
+                        <div class="skill-icon blue"><svg class="ico" aria-hidden="true"><use href="#i-code"/></svg></div>
                         <div class="skill-content">
                             <h3>前端开发</h3>
-                            <p>构建高性能、可访问的现代 Web 应用</p>
+                            <p>手写 HTML / CSS / JavaScript 页面与滚动动画，本站从布局到动画均为自实现</p>
                             <div class="skill-tags">
                                 <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Vue</span>
                             </div>
                         </div>
                     </div>
                     <div class="skill-card">
-                        <div class="skill-icon green"><i class="fas fa-server"></i></div>
+                        <div class="skill-icon green"><svg class="ico" aria-hidden="true"><use href="#i-server"/></svg></div>
                         <div class="skill-content">
                             <h3>后端开发</h3>
-                            <p>熟悉 Spring Boot、Django 等主流框架</p>
+                            <p>Spring Boot 电商系统、Django 教务与推荐系统，从数据建模到接口实现完整落地</p>
                             <div class="skill-tags">
-                                <span>Java</span><span>Python</span><span>MySQL</span>
+                                <span>Java</span><span>Python</span><span>Spring Boot</span><span>Django</span><span>MySQL</span>
                             </div>
                         </div>
                     </div>
                     <div class="skill-card">
-                        <div class="skill-icon purple"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="skill-icon purple"><svg class="ico" aria-hidden="true"><use href="#i-mobile"/></svg></div>
                         <div class="skill-content">
                             <h3>移动开发</h3>
-                            <p>基于 HarmonyOS 的应用开发经验</p>
+                            <p>HarmonyOS 应用开发，掌握 ArkTS / ArkUI 声明式 UI 与五组件分层解耦设计</p>
                             <div class="skill-tags">
                                 <span>HarmonyOS</span><span>ArkTS</span><span>ArkUI</span>
                             </div>
                         </div>
                     </div>
                     <div class="skill-card">
-                        <div class="skill-icon orange"><i class="fas fa-database"></i></div>
+                        <div class="skill-icon orange"><svg class="ico" aria-hidden="true"><use href="#i-db"/></svg></div>
                         <div class="skill-content">
-                            <h3>数据分析</h3>
-                            <p>时间序列分析与预测相关研究</p>
+                            <h3>数据分析与算法</h3>
+                            <p>时间序列分析与预测方向研究；熟悉协同过滤推荐、计算机视觉基础模型应用与大模型 Agent 编排</p>
                             <div class="skill-tags">
-                                <span>Python</span><span>NumPy</span><span>Pandas</span>
+                                <span>Python</span><span>Pandas</span><span>Spark</span><span>dlib / OpenCV</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
     </div>
-    
+
     <!-- 页脚 -->
     <footer class="footer" id="contact">
         <div class="footer-sticky">
-            <p class="footer-label">准备好了吗</p>
+            <p class="footer-label">有合适的机会？</p>
             <div class="footer-cta">
                 <a href="mailto:zx1732985615@163.com">联系我</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2024 小鑫. All rights reserved.</span>
+            <span>© <span id="copyYear">2025</span> 小鑫. All rights reserved.</span>
             <div class="footer-links">
-                <a href="https://github.com/bboyf" target="_blank">GitHub</a>
+                <a href="https://github.com/bboyf" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a href="mailto:zx1732985615@163.com">Email</a>
             </div>
         </div>
     </footer>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

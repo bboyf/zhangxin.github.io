@@ -13,8 +13,10 @@
     --c-green: #16a34a;
     --c-purple: #7c3aed;
     --c-orange: #ea580c;
-    --font-display: 'Syncopate', sans-serif;
-    --font-body: 'Manrope', sans-serif;
+    /* Syncopate / Manrope 均无中文字形，逐字回退到以下中文字体栈 */
+    --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    --font-display: 'Syncopate', var(--font-cjk);
+    --font-body: 'Manrope', var(--font-cjk);
 }
 
 body {
@@ -23,6 +25,8 @@ body {
     color: #333;
     background: var(--c-bg);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* 噪点叠加层 */
@@ -133,12 +137,16 @@ a {
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    /* 关闭时同时隐藏可见性与可聚焦性，避免 Tab 键落入屏幕外的菜单 */
     transform: translateY(-100%);
-    transition: transform 700ms cubic-bezier(0.22,1,0.36,1);
+    visibility: hidden;
+    transition: transform 700ms cubic-bezier(0.22,1,0.36,1), visibility 0s linear 700ms;
 }
 
 .mobile-menu.open {
     transform: translateY(0);
+    visibility: visible;
+    transition: transform 700ms cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0s;
 }
 
 .mobile-menu a {
@@ -208,6 +216,10 @@ a {
 
 .hero-title span {
     display: inline-block;
+}
+
+/* 只有动画库就绪时才隐藏初始文字，避免 JS 失败导致标题消失 */
+.js .hero-title span {
     transform: translateY(110%);
 }
 
@@ -285,11 +297,13 @@ a {
     100% { transform: rotate( 0.0deg) }
 }
 
-.profile-content h1 {
+.profile-name {
     font-size: 3rem;
+    line-height: 1.1;
     margin-bottom: 10px;
     background: linear-gradient(45deg, #2d3748, #4a5568);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -448,7 +462,7 @@ a {
 
 /* 项目展示区域 */
 .projects-section {
-    padding: 6rem 1.5rem;
+    padding: 6rem 0;
     border-top: 1px solid rgba(0,0,0,0.1);
 }
 
@@ -483,92 +497,115 @@ a {
 }
 
 .project-item {
-    border-top: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1.5rem 0;
     display: grid;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.75rem 1rem;
+    align-items: start;
     grid-template-columns: 1fr;
-    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
     transition: background 300ms;
 }
 
 .project-item:last-child {
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .project-item:hover {
-    background: rgba(0,0,0,0.02);
+    background: rgba(0, 0, 0, 0.025);
 }
 
 @media (min-width: 768px) {
     .project-item {
-        grid-template-columns: 80px 1fr auto;
+        grid-template-columns: 64px minmax(0, 1fr) auto;
         padding: 2rem 0;
+        align-items: center;
     }
 }
 
 .project-num {
-    font-family: var(--font-display);
     font-size: 0.75rem;
+    letter-spacing: 0.1em;
     color: rgb(107 114 128);
+}
+
+.project-main {
+    min-width: 0;
 }
 
 .project-title {
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    transition: transform 500ms;
+    line-height: 1.35;
+    transition: transform 400ms;
 }
 
 @media (min-width: 768px) {
     .project-title {
-        font-size: 2rem;
+        font-size: 1.6rem;
     }
 }
 
 .project-item:hover .project-title {
-    transform: translateX(10px);
+    transform: translateX(8px);
+}
+
+.project-desc-line {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: #5b6270;
+    max-width: 68ch;
 }
 
 .project-meta-wrapper {
     display: flex;
     align-items: center;
     gap: 1rem;
-    justify-content: flex-end;
+    justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    .project-meta-wrapper {
+        justify-content: flex-end;
+    }
 }
 
 .project-meta {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: rgb(107 114 128);
-    display: none;
+    line-height: 1.5;
 }
 
 @media (min-width: 768px) {
     .project-meta {
-        display: block;
+        max-width: 22ch;
+        text-align: right;
     }
-}
-
-.project-links {
-    display: flex;
-    gap: 0.5rem;
 }
 
 .project-link {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     transition: all 300ms;
 }
 
-.project-link:hover {
+.project-link .ico {
+    width: 1rem;
+    height: 1rem;
+}
+
+.project-item:hover .project-link {
     background: var(--c-dark);
     color: #fff;
     border-color: var(--c-dark);
@@ -576,9 +613,9 @@ a {
 
 /* 技能栈区域 */
 .skills-section {
-    padding: 6rem 1.5rem;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    background: #fafafa;
+    padding: 6rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.45);
 }
 
 .skills-header {
@@ -711,16 +748,21 @@ a {
     justify-content: space-between;
 }
 
-.footer-bottom span, .footer-bottom a {
-    font-size: 10px;
-    color: rgb(55 65 81);
+.footer-bottom span,
+.footer-bottom a {
+    font-size: 11px;
+    color: #9ca3af;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
 
 .footer-bottom a:hover {
-    color: #9ca3af;
+    color: #e5e7eb;
+}
+
+.footer-bottom a:hover {
+    color: #e5e7eb;
 }
 
 .footer-links {
@@ -755,18 +797,9 @@ a {
         min-width: 150px;
         min-height: 250px;
     }
-    
-    @media (max-width: 480px) {
-        .widgets-column {
-            flex-direction: column;
-        }
-        .widget-card {
-            min-height: auto;
-        }
-    }
 }
 
-/* 文字逐字显示动画 */
+/* 文字逐字显示动画（仅在动画可用时隐藏初始状态） */
 .word-wrap {
     overflow: hidden;
     display: inline-block;
@@ -775,124 +808,68 @@ a {
 
 .word-inner {
     display: inline-block;
+}
+
+.js .word-inner {
     transform: translateY(110%);
 }
 
-/* 选中效果 */
 ::selection {
     background: var(--c-dark);
     color: #fff;
 }
-/* 通用部分样式 */
+/* 通用区块：不再强制白色背景，避免与 --c-bg 米灰底色断层 */
 .section {
-    padding: 60px 0;
-    background-color: #fff;
+    position: relative;
 }
 
-.section h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 40px;
-    color: #2c3e50;
+/* 内联 SVG 图标（已替代 Font Awesome 图标字体） */
+.ico {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    flex-shrink: 0;
+    vertical-align: -0.125em;
 }
 
-.bg-light {
-    background-color: #f9f9f9;
+/* 键盘可达性：可见焦点环 */
+a:focus-visible,
+button:focus-visible,
+.project-item:focus-visible {
+    outline: 2px solid var(--c-blue);
+    outline-offset: 3px;
+    border-radius: 6px;
 }
 
-/* 关于我部分布局调整 - 已废弃 */
-/*
-.about-container { ... }
-.about-content { ... }
-.widgets-sidebar { ... }
-.widget { ... }
-.clock-widget { ... }
-.calendar-widget { ... }
-*/
-
-/* 项目卡片样式 */
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+/* 移动端菜单打开时锁定背景滚动 */
+body.menu-open {
+    overflow: hidden;
 }
 
-.project-card {
-    background: #fff;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+@media (max-width: 480px) {
+    .widgets-column {
+        flex-direction: column;
+    }
+    .widget-card {
+        min-height: auto;
+    }
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-}
-
-.project-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.project-desc {
-    color: #666;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
-}
-
-.tags {
-    margin-bottom: 15px;
-}
-
-.tags span {
-    display: inline-block;
-    background-color: #eef2f7;
-    color: #4a5568;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-
-.project-links a {
-    font-size: 0.9rem;
-    margin-right: 15px;
-    font-weight: 500;
-}
-
-/* 技能列表样式 */
-.skills-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-}
-
-.skill-item {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-weight: 500;
-    color: #555;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* 页脚样式 */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 30px 0;
-}
-
-footer p {
-    opacity: 0.7;
-    font-size: 0.9rem;
-}
-
-footer a {
-    color: #fff;
-    text-decoration: underline;
+/* 尊重系统「减少动效」偏好 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+    .wave-emoji {
+        animation: none;
+    }
+    .hero-title span,
+    .word-inner {
+        transform: none !important;
+    }
 }
