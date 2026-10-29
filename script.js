@@ -92,6 +92,17 @@
             // Hero 副标题
             gsap.to('.hero-sub', { opacity: 1, duration: 1, delay: 0.5 });
 
+            // 兜底：首屏动画若因后台标签页 rAF 被节流而未推进，3 秒后强制显示
+            setTimeout(function () {
+                var heroSpan = document.querySelector('.hero-title span');
+                if (heroSpan) {
+                    var t = getComputedStyle(heroSpan).transform;
+                    if (t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)') heroSpan.style.transform = 'none';
+                }
+                var sub = document.querySelector('.hero-sub');
+                if (sub && getComputedStyle(sub).opacity !== '1') sub.style.opacity = '1';
+            }, 3000);
+
             // 标题逐字显示
             document.querySelectorAll('.section-heading').forEach(function (el) {
                 var text = el.textContent;
