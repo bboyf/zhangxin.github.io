@@ -1,6 +1,6 @@
 {
   "updated": "2026-11-16",
-  "count": 2,
+  "count": 3,
   "posts": [
     {
       "title": "长程 Agent 缺的不是上下文，是遗忘",
@@ -15,6 +15,19 @@
       "view": "长程 agent 的稀缺资源不是上下文长度，是可学习的遗忘策略。",
       "readingTime": 8,
       "url": "blog/2026-11-16-long-horizon-agent-forgetting.html"
+    },
+    {
+      "title": "记忆该学出来，不该检索出来",
+      "slug": "2026-11-16-learned-memory-over-vector-store",
+      "date": "2026-11-16",
+      "tags": [
+        "上下文",
+        "工程化"
+      ],
+      "summary": "Gamer 摘要里真正的信号不是通用，而是记忆管理进了可训练架构。向量库加 top-k 是把工程启发式当成架构，在长程任务上会静默失败。",
+      "view": "长程 Agent 的记忆该由策略学出来，向量库加 top-k 只是把工程启发式当成了架构。",
+      "readingTime": 7,
+      "url": "blog/2026-11-16-learned-memory-over-vector-store.html"
     },
     {
       "title": "Agent 的瓶颈不是模型，是输出契约",

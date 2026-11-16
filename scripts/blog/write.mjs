@@ -160,10 +160,20 @@ if (!existsSync(candidatesPath)) {
 }
 
 const { candidates } = JSON.parse(readFileSync(candidatesPath, 'utf8'));
+
+// 已用过的选题来源（入库文件，跨 PR / 跨周去重）
+const usedPath = join(ROOT, 'blog', 'topics-used.json');
+const used = existsSync(usedPath) ? JSON.parse(readFileSync(usedPath, 'utf8')) : [];
+const usedNow = [];
+const usedUrls = new Set(used.map((u) => u.url).filter(Boolean));
+
 const skip = new Set((process.env.SKIP_TOPICS || '').split('|').filter(Boolean));
-const pool = candidates.filter((c) => !skip.has(c.title)).slice(0, Math.max(COUNT, 3));
+const pool = candidates
+  .filter((c) => !skip.has(c.title) && !(c.url && usedUrls.has(c.url)))
+  .slice(0, Math.max(COUNT, 3));
 const written = existingTitles();
 const created = [];
+if (!pool.length) console.warn('候选选题都写过了，本次不生成');
 
 mkdirSync(POSTS_DIR, { recursive: true });
 
@@ -213,18 +223,14 @@ for (const topic of pool) {
   writeFileSync(file, `${frontmatter}${post.body.trim()}\n`, 'utf8');
   written.push(post.title);
   created.push(post.title);
+  usedNow.push({ url: topic.url || '', source: topic.title, title: post.title, date: TODAY });
   console.log(`已生成：blog/posts/${TODAY}-${slug}.md — ${post.title}`);
   await sleep(1500);
 }
 
-// 记录已写题目，供下次去重
-const historyPath = join(CACHE, 'history.json');
-const history = existsSync(historyPath) ? JSON.parse(readFileSync(historyPath, 'utf8')) : [];
-writeFileSync(
-  historyPath,
-  JSON.stringify([...new Set([...history, ...written])].slice(-120), null, 2),
-  'utf8'
-);
-
+// 把这次用掉的信源写回仓库文件，避免下周 / 其它 PR 撞同一个源
+if (usedNow.length) {
+  writeFileSync(usedPath, JSON.stringify([...used, ...usedNow].slice(-200), null, 2) + '\n', 'utf8');
+}
 console.log(`\n本次生成 ${created.length} 篇`);
 if (!created.length) process.exitCode = 1;

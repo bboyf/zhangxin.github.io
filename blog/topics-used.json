@@ -1,0 +1,14 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2611.18397v1",
+    "source": "Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agent",
+    "title": "记忆该学出来，不该检索出来",
+    "date": "2026-11-16"
+  },
+  {
+    "url": "https://github.com/bboyf/world-cup-prediction",
+    "source": "本地手写：世界杯预测引擎的四层约束",
+    "title": "Agent 的瓶颈不是模型，是输出契约",
+    "date": "2026-11-16"
+  }
+]

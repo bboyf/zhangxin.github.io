@@ -83,8 +83,7 @@ jobs:
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
 
-      - name: 渲染页面
-        run: node scripts/blog/build.mjs
+      # 故意不渲染 HTML：PR 里只有 Markdown，审起来干净也不会互相冲突
 
       - name: 提交并开 PR
         env:
@@ -92,7 +91,7 @@ jobs:
         run: |
           git config user.name "blog-bot"
           git config user.email "blog-bot@users.noreply.github.com"
-          git add blog sitemap.xml
+          git add blog/posts blog/topics-used.json
           if git diff --cached --quiet; then
             echo "本周没有生成新文章，结束"
             exit 0
