@@ -1,0 +1,33 @@
+{
+  "updated": "2026-11-16T08:51:49.743Z",
+  "count": 2,
+  "posts": [
+    {
+      "title": "长程 Agent 缺的不是上下文，是遗忘",
+      "slug": "2026-11-16-long-horizon-agent-forgetting",
+      "date": "2026-11-16",
+      "tags": [
+        "上下文",
+        "工程化",
+        "推理成本"
+      ],
+      "summary": "长程 agent 的瓶颈是遗忘策略而非上下文长度。Gamer 把记忆管理放进训练管线，方向对，但端到端学记忆的证据还很薄。",
+      "view": "长程 agent 的稀缺资源不是上下文长度，是可学习的遗忘策略。",
+      "readingTime": 8,
+      "url": "blog/2026-11-16-long-horizon-agent-forgetting.html"
+    },
+    {
+      "title": "Agent 的瓶颈不是模型，是输出契约",
+      "slug": "2026-11-16-agent-output-contract",
+      "date": "2026-11-16",
+      "tags": [
+        "工程化",
+        "上下文"
+      ],
+      "summary": "换更强的模型对多数 Agent 项目的收益，比把输出契约写死要小；先把结构约束做对，再谈模型升级。",
+      "view": "大多数 Agent 项目卡在输出不可解析、不可复现，而不是模型不够聪明。",
+      "readingTime": 5,
+      "url": "blog/2026-11-16-agent-output-contract.html"
+    }
+  ]
+}

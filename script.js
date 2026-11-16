@@ -264,3 +264,78 @@
         generateCalendar();
     });
 })();
+
+// === 首页技术博客卡片：读取 blog/index.json ===
+(function () {
+    'use strict';
+
+    var MAX_CARDS = 3;
+
+    function escapeText(value) {
+        return String(value == null ? '' : value);
+    }
+
+    function buildCard(post) {
+        var a = document.createElement('a');
+        a.className = 'blog-card';
+        a.href = post.url;
+
+        var meta = document.createElement('div');
+        meta.className = 'blog-card-meta';
+
+        var date = document.createElement('span');
+        date.textContent = escapeText(post.date);
+        meta.appendChild(date);
+
+        (post.tags || []).slice(0, 2).forEach(function (tag) {
+            var chip = document.createElement('span');
+            chip.className = 'blog-card-tag';
+            chip.textContent = escapeText(tag);
+            meta.appendChild(chip);
+        });
+
+        var title = document.createElement('h3');
+        title.textContent = escapeText(post.title);
+
+        var summary = document.createElement('p');
+        summary.textContent = escapeText(post.summary);
+
+        a.appendChild(meta);
+        a.appendChild(title);
+        a.appendChild(summary);
+
+        if (post.view) {
+            var view = document.createElement('div');
+            view.className = 'blog-card-view';
+            view.textContent = '观点：' + escapeText(post.view);
+            a.appendChild(view);
+        }
+
+        return a;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var list = document.getElementById('blogList');
+        if (!list || !window.fetch) return;
+
+        fetch('blog/index.json', { cache: 'no-cache' })
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
+                var posts = (data && data.posts) || [];
+                if (!posts.length) return;
+
+                var frag = document.createDocumentFragment();
+                posts.slice(0, MAX_CARDS).forEach(function (post) {
+                    frag.appendChild(buildCard(post));
+                });
+                list.textContent = '';
+                list.appendChild(frag);
+            })
+            .catch(function () {
+                list.innerHTML = '<p class="blog-empty">文章列表加载失败，可直接访问 <a href="blog/">博客目录</a>。</p>';
+            });
+    });
+})();

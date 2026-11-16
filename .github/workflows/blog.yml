@@ -1,0 +1,122 @@
+name: 技术博客
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'blog/posts/**.md'
+      - 'scripts/blog/**.mjs'
+      - 'blog/blog.css'
+  schedule:
+    # 每周一、周四 01:30 UTC = 北京时间 09:30，自动写 2 篇初稿并开 PR
+    - cron: '30 1 * * 1,4'
+  workflow_dispatch:
+    inputs:
+      count:
+        description: '生成几篇初稿'
+        required: false
+        default: '2'
+      dry_run:
+        description: '只采集选题，不调用模型'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: blog-${{ github.event_name }}
+  cancel-in-progress: false
+
+env:
+  LLM_BASE_URL: ${{ vars.LLM_BASE_URL || 'https://opencode.ai/zen/go' }}
+  LLM_MODEL: ${{ vars.LLM_MODEL || 'deepseek-v4.1-flash' }}
+
+jobs:
+  # 你手写或改动的 Markdown 一推上来，就重新生成 HTML
+  rebuild:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 渲染页面
+        run: node scripts/blog/build.mjs
+      - name: 提交渲染结果
+        run: |
+          git config user.name "blog-bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git add blog sitemap.xml
+          if git diff --cached --quiet; then
+            echo "没有需要更新的页面"
+            exit 0
+          fi
+          git commit -m "blog: 重新生成页面 [skip ci]"
+          git push
+
+  # 定时采集 + 写初稿 + 开 PR，等你审阅合并
+  weekly:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 采集候选选题
+        run: node scripts/blog/collect.mjs --limit 8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 生成初稿
+        if: ${{ github.event_name == 'schedule' || inputs.dry_run != true }}
+        run: node scripts/blog/write.mjs --count ${{ inputs.count || '2' }}
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+
+      - name: 渲染页面
+        run: node scripts/blog/build.mjs
+
+      - name: 提交并开 PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "blog-bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git add blog sitemap.xml
+          if git diff --cached --quiet; then
+            echo "本周没有生成新文章，结束"
+            exit 0
+          fi
+
+          BRANCH="blog/auto-$(date +%Y-%m-%d-%H%M)"
+          git checkout -b "$BRANCH"
+          git commit -m "blog: $(date +%F) 自动生成初稿"
+
+          # 把这次改写过的文章标题列进 PR 描述
+          {
+            echo "自动生成的初稿，等你审阅后合并。"
+            echo
+            echo "**审稿清单**"
+            echo "- [ ] 观点是否你真的认同？不认同就删，别将就"
+            echo "- [ ] 「对我的项目意味着什么」里的事实是否正确"
+            echo "- [ ] 代码块能不能跑"
+            echo "- [ ] 补一句你自己的一手经验"
+            echo
+            echo "**本次新增/修改**"
+            git diff --name-only HEAD~1 -- blog/posts || true
+          } > /tmp/pr-body.md
+
+          git push -u origin "$BRANCH"
+          gh pr create --base master --head "$BRANCH" \
+            --title "博客初稿 $(date +%F)：$(git diff --name-only HEAD~1 -- blog/posts | head -n 1 | xargs -r basename)" \
+            --body-file /tmp/pr-body.md

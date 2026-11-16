@@ -65,3 +65,28 @@ Windows 下双击 `deploy.bat`，输入更新说明后自动提交并推送；
 - **无障碍**：支持键盘焦点环、移动端菜单 `aria-expanded` / ESC 关闭与背景滚动锁定、
   日历当前日期 `aria-current`，并遵循系统 `prefers-reduced-motion` 设置。
 - **零外部请求**：除 GitHub 自身外，页面不向任何第三方域名发起请求。
+
+## 技术博客（自动周更）
+
+博客在 `blog/` 下，Markdown 是唯一可信来源，HTML 由脚本生成。
+
+| 目录 / 脚本 | 作用 |
+|------|------|
+| `blog/posts/*.md` | 文章源文件（含 frontmatter：title / date / tags / summary / view / source / draft） |
+| `blog/_template.md` | 新文章模板 |
+| `scripts/blog/collect.mjs` | 抓 HN、arXiv、GitHub、InfoQ 中文、OpenAI、Google AI 等信号并按关键词打分 |
+| `scripts/blog/write.mjs` | 调 LLM 写初稿，校验字数、代码块、禁用词后落盘 |
+| `scripts/blog/build.mjs` | 渲染 `blog/*.html`、`blog/index.html`、`blog/index.json`，并更新 `sitemap.xml` |
+| `.github/workflows/blog.yml` | 周一 / 周四 09:30 自动写 2 篇并开 PR；手动草稿推上来自动重建页面 |
+
+本地跑：
+
+```bash
+node scripts/blog/collect.mjs --limit 8
+node scripts/blog/write.mjs --count 2      # 需要 LLM_API_KEY
+node scripts/blog/build.mjs
+```
+
+需要的仓库配置：Secret `LLM_API_KEY`；可选 Variable `LLM_BASE_URL`、`LLM_MODEL`
+（默认 `https://opencode.ai/zen/go` + `deepseek-v4.1-flash`）。
+自动生成的内容只开 PR，必须人工审阅后合并。

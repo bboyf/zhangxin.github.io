@@ -770,6 +770,134 @@ a {
     gap: 1.5rem;
 }
 
+/* 技术博客区域 */
+.blog-section {
+    padding: 120px 0;
+}
+
+.blog-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.blog-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--c-dark);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(18, 18, 18, .3);
+    transition: color .2s ease, border-color .2s ease;
+}
+
+.blog-all:hover {
+    color: var(--c-blue);
+    border-color: var(--c-blue);
+}
+
+.blog-all .ico {
+    width: 16px;
+    height: 16px;
+}
+
+.blog-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.blog-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 26px 24px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .55);
+    border: 1px solid rgba(18, 18, 18, .08);
+    text-decoration: none;
+    color: inherit;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+    background: #fff;
+    box-shadow: 0 16px 36px rgba(18, 18, 18, .1);
+}
+
+.blog-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6b6b6b;
+}
+
+.blog-card-tag {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, .1);
+    color: var(--c-blue);
+}
+
+.blog-card h3 {
+    font-size: 17px;
+    line-height: 1.5;
+    font-weight: 700;
+}
+
+.blog-card p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #4a4a4a;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.blog-card-view {
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: 13px;
+    color: var(--c-dark);
+    border-top: 1px dashed rgba(18, 18, 18, .18);
+}
+
+.blog-empty {
+    font-size: 14px;
+    color: #6b6b6b;
+}
+
+@media (max-width: 1024px) {
+    .blog-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-section {
+        padding: 80px 0;
+    }
+
+    .blog-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .blog-list {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
     .bento-grid {
