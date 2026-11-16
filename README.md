@@ -74,7 +74,7 @@ Windows 下双击 `deploy.bat`，输入更新说明后自动提交并推送；
 |------|------|
 | `blog/posts/*.md` | 文章源文件（含 frontmatter：title / date / tags / summary / view / source / draft） |
 | `blog/_template.md` | 新文章模板 |
-| `scripts/blog/collect.mjs` | 抓 HN、arXiv、GitHub、InfoQ 中文、OpenAI、Google AI 等信号并按关键词打分 |
+| `scripts/blog/collect.mjs` | 抓 19 个稳定源（HN、arXiv、GitHub、量子位、InfoQ、OpenAI、DeepMind、Simon Willison 等）并按关键词打分 |
 | `scripts/blog/write.mjs` | 调 LLM 写初稿，校验字数、代码块、禁用词后落盘 |
 | `scripts/blog/build.mjs` | 渲染 `blog/*.html`、`blog/index.html`、`blog/index.json`，并更新 `sitemap.xml` |
 | `.github/workflows/blog.yml` | 周一 / 周四 09:30 自动写 2 篇并开 PR；手动草稿推上来自动重建页面 |

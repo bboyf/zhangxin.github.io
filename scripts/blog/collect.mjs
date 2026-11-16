@@ -18,13 +18,31 @@ const KEYWORDS = [
   ['推理', 1], ['智能体', 3], ['上下文', 2], ['评测', 2], ['工具调用', 3]
 ];
 
+// 只保留实测能稳定返回条目的源；weight 是基础分，用于压制泛科技新闻
 const RSS_FEEDS = [
-  { name: '机器之心', url: 'https://www.jiqizhixin.com/rss' },
-  { name: 'InfoQ 中文', url: 'https://www.infoq.cn/feed' },
-  { name: 'LangChain Blog', url: 'https://blog.langchain.dev/rss/' },
-  { name: 'OpenAI News', url: 'https://openai.com/news/rss.xml' },
-  { name: 'Google AI Blog', url: 'https://blog.google/technology/ai/rss/' },
-  { name: 'r/LocalLLaMA', url: 'https://www.reddit.com/r/LocalLLaMA/top/.rss?t=week' }
+  // 中文媒体
+  { name: '量子位', url: 'https://www.qbitai.com/feed', weight: 2, max: 12 },
+  { name: 'InfoQ 中文', url: 'https://www.infoq.cn/feed', weight: 2, max: 15 },
+  { name: 'AI 科技评论', url: 'https://www.leiphone.com/feed', weight: 0, max: 8 },
+  // 官方 / 研究室
+  { name: 'OpenAI News', url: 'https://openai.com/news/rss.xml', weight: 2, max: 12 },
+  { name: 'Google DeepMind', url: 'https://deepmind.google/blog/rss.xml', weight: 2, max: 12 },
+  { name: 'Google AI Blog', url: 'https://blog.google/technology/ai/rss/', weight: 1, max: 12 },
+  { name: 'Microsoft Research', url: 'https://www.microsoft.com/en-us/research/feed/', weight: 1, max: 8 },
+  { name: 'BAIR Blog', url: 'https://bair.berkeley.edu/blog/feed.xml', weight: 1, max: 8 },
+  { name: 'Synced Review', url: 'https://syncedreview.com/feed/', weight: 2, max: 10 },
+  { name: 'MarkTechPost', url: 'https://www.marktechpost.com/feed/', weight: 1, max: 10 },
+  { name: 'The Gradient', url: 'https://thegradient.pub/rss/', weight: 1, max: 8 },
+  // 一线实践者博客（观点密度最高）
+  { name: 'Simon Willison', url: 'https://simonwillison.net/atom/everything/', weight: 2, max: 12 },
+  { name: 'Latent Space', url: 'https://www.latent.space/feed', weight: 2, max: 10 },
+  { name: 'Interconnects', url: 'https://www.interconnects.ai/feed', weight: 2, max: 10 },
+  { name: 'One Useful Thing', url: 'https://www.oneusefulthing.org/feed', weight: 1, max: 8 },
+  { name: 'Ahead of AI', url: 'https://magazine.sebastianraschka.com/feed', weight: 2, max: 8 },
+  { name: "Lil'Log", url: 'https://lilianweng.github.io/index.xml', weight: 2, max: 6 },
+  // 聚合
+  { name: 'arXiv cs.CL', url: 'https://export.arxiv.org/rss/cs.CL', weight: 1, max: 12 },
+  { name: 'Hacker News RSS', url: 'https://hnrss.org/frontpage', weight: 2, max: 15 }
 ];
 
 async function get(url, opts = {}) {
@@ -136,15 +154,22 @@ async function collectGitHub() {
 }
 
 async function collectFeeds() {
+  let ok = 0;
   for (const feed of RSS_FEEDS) {
     try {
-      const items = parseFeed(await get(feed.url, { accept: 'application/rss+xml, application/xml' }));
-      for (const item of items.slice(0, 15)) add(feed.name, item, 0);
+      const items = parseFeed(await get(feed.url, { accept: 'application/rss+xml, application/xml' })).slice(0, feed.max || 12);
+      if (!items.length) {
+        console.warn(`  ${feed.name}: 没有解析到条目，跳过`);
+        continue;
+      }
+      for (const item of items) add(feed.name, item, feed.weight || 0);
+      ok += 1;
       console.log(`  ${feed.name}: ${items.length} 条`);
     } catch (err) {
       console.warn(`  ${feed.name}: 跳过（${err.message}）`);
     }
   }
+  console.log(`  RSS 可用源 ${ok}/${RSS_FEEDS.length}`);
 }
 
 function score(item) {
@@ -168,9 +193,21 @@ for (const [name, fn] of Object.entries(sources)) {
   }
 }
 
+// Agent 主题相关性门槛：命中至少一个强关键词才进候选，避免把泛科技新闻推上来
+const STRONG_WORDS = [
+  'agent', 'multi-agent', '智能体', 'mcp', '工具调用', 'tool call', 'tool use',
+  'coding agent', 'harness', 'rag', 'retrieval', 'eval', '评测', 'benchmark',
+  'context window', '上下文', 'memory', '记忆', 'orchestration'
+];
+function relevant(item) {
+  const text = `${item.title} ${item.summary}`.toLowerCase();
+  return STRONG_WORDS.some((word) => text.includes(word)) || item.score >= 14;
+}
+
 const seen = new Set();
 const ranked = candidates
   .map((item) => ({ ...item, score: score(item) }))
+  .filter((item) => relevant(item) && item.score >= 5)
   .filter((item) => {
     const key = item.title.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '').slice(0, 60);
     if (seen.has(key)) return false;
