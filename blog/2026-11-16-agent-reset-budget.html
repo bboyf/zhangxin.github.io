@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏 agent 的迁移价值，藏在 reset 按钮里 | 小鑫的技术博客</title>
+<meta name="description" content="端到端 VLA 在游戏里成立，靠的是可无限重置的环境而非更聪明的架构。给出一个可跑的动作可逆性审计，用 reset 预算划出端到端的适用边界。">
+<meta name="author" content="小鑫">
+<meta name="theme-color" content="#121212">
+<link rel="canonical" href="https://bboyf.github.io/zhangxin.github.io/blog/2026-11-16-agent-reset-budget.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏 agent 的迁移价值，藏在 reset 按钮里">
+<meta property="og:description" content="端到端 VLA 在游戏里成立，靠的是可无限重置的环境而非更聪明的架构。给出一个可跑的动作可逆性审计，用 reset 预算划出端到端的适用边界。">
+<meta property="og:url" content="https://bboyf.github.io/zhangxin.github.io/blog/2026-11-16-agent-reset-budget.html">
+<meta property="og:image" content="https://bboyf.github.io/zhangxin.github.io/assets/og-card.png">
+<meta property="article:published_time" content="2026-11-16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121212'/%3E%3Ctext x='50' y='52' font-family='Microsoft YaHei,PingFang SC,sans-serif' font-size='58' font-weight='700' fill='%23ffffff' text-anchor='middle' dominant-baseline='central'%3E%E9%91%AB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../vendor/fonts.css">
+<link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<header class="topbar">
+  <a class="brand" href="../index.html">小鑫</a>
+  <nav class="topnav">
+    <a href="../index.html#blog">全部文章</a>
+    <a href="../index.html">主页</a>
+  </nav>
+</header>
+<main class="article">
+  <p class="crumbs"><a href="../index.html#blog">技术博客</a> / <span>2026-11-16</span></p>
+  <h1>游戏 agent 的迁移价值，藏在 reset 按钮里</h1>
+  <div class="meta">
+    <span>2026-11-16</span><span>约 7 分钟</span><span class="tag">工程化</span><span class="tag">评测</span><span class="tag">工具调用</span>
+  </div>
+  <p class="view-line"><strong>一句话观点：</strong>端到端的适用范围由外部系统的补偿能力决定，不由模型规模决定。</p>
+  <article class="content">
+<h2>Gamer 里我真正在意的一行字</h2>
+<p>摘要里最实的一句不是 end-to-end，是这句：a shared training and deployment pipeline supports interaction with both conventional 2D graphical interfaces and complex 3D simulated worlds。2D GUI 和 3D 世界共用一条训练加部署管线，意味着模型被要求在两种差别极大的观测分布上都成立，这件事有含金量。剩下的部分——感知、记忆管理、多步推理塞进一个端到端架构——在 2026 年已经是标准做法。摘要被截断在预训练数据那一段，记忆模块的具体形式我没看到，不猜。</p>
+<h2>可重置性是一条硬边界，不是工程细节</h2>
+<p>我的判断：端到端 VLA 在游戏里成立，很大一部分原因不是架构更聪明，而是游戏给了你两样在真实工作流里买不到的东西——无限次 reset，和一个不撒谎的 reward。这两样东西让试错变成免费的。一个策略在游戏里可以摔一万次，每次摔倒都是干净的初始状态；业务里一次摔倒就是一条已经发出去的邮件、一笔已经扣掉的款。</p>
+<p>这里要区分两个词：可回滚（reversible）和可补偿（compensable）。写临时文件可回滚；转账不可回滚，但能反向转账补偿；发通知既不可回滚也很难补偿。端到端试错的成本，约等于 plan 里不可回滚动作的期望次数乘以单次损失。游戏里这个乘积是 0，所以架构怎么堆都行。业务里它不是 0，所以架构得先把这个乘积压下来，再谈模型能力。</p>
+<h2>「端到端会吃掉记忆和工具」这个说法，我不同意</h2>
+<p>流行说法大致是这样：agent 的记忆管理、工具选择、多步规划都是过渡期的脚手架，模型够强、上下文够长，这些最终会被吸收进权重。Gamer 这类工作经常被拿来当证据。</p>
+<p>我反驳的理由只有一条：能被学习的是分布，不能被学习的是权限。reset 不是模型能力，是环境给你的权限；reward 不是模型能力，是你对「什么算成功」的一次立法。这两样东西都在模型外面，权重再大也长不出来。你把记忆塞进权重，权重也没法在写错一条生产数据之后把那条数据吐回来。所以「吸收进权重」的上限，是那些本来就不需要回滚的环节。</p>
+<p>端到端真正吃掉的是接口设计成本。2D GUI 和 3D 世界观测差异那么大，用一套手工特征工程去对齐确实痛苦，让模型自己学对齐是划算的。这是工程收益，不是架构哲学的胜利。把这两件事混着讲，是这类工作传播时最常见的滑移。</p>
+<h2>给动作做一次可逆性审计</h2>
+<p>与其争论架构，不如先给手上的 agent 算 reset 预算。下面这段只用标准库，直接能跑：</p>
+<pre class="code-block" data-lang="python"><code>from dataclasses import dataclass, field
+from enum import Enum
+
+class Reversible(Enum):
+    YES = 'reversible'
+    COMPENSABLE = 'compensable'
+    NO = 'irreversible'
+
+# 补偿成本占单次损失的比例，是我拍的，不是实测
+COST = {Reversible.YES: 0.0, Reversible.COMPENSABLE: 0.2, Reversible.NO: 1.0}
+
+@dataclass
+class Action:
+    name: str
+    kind: Reversible
+
+@dataclass
+class Registry:
+    actions: dict = field(default_factory=dict)
+
+    def register(self, name, kind):
+        self.actions[name] = Action(name, kind)
+        return self
+
+    def audit(self, plan, loss_per_failure=1.0):
+        rows, risk = [], 0.0
+        for step in plan:
+            if step not in self.actions:
+                raise KeyError(f'unregistered action: {step}')
+            a = self.actions[step]
+            cost = COST[a.kind] * loss_per_failure
+            risk += cost
+            rows.append((step, a.kind.value, round(cost, 3)))
+        first_hard = next(
+            (i for i, s in enumerate(plan)
+             if self.actions[s].kind is Reversible.NO), None)
+        return {'plan': rows, 'reset_budget': round(risk, 3),
+                'gate_before_step': first_hard}
+
+reg = (Registry()
+       .register('write_temp_file', Reversible.YES)
+       .register('update_local_sqlite', Reversible.YES)
+       .register('commit_github_action', Reversible.COMPENSABLE)
+       .register('send_email', Reversible.NO)
+       .register('place_order', Reversible.NO))
+
+print(reg.audit(['write_temp_file', 'update_local_sqlite', 'send_email'], 1.0))
+# reset_budget=1.0, gate_before_step=2</code></pre>
+<p>gate_before_step 是这段代码唯一的产出物：它告诉你端到端试错最多能跑到第几步，之后必须换成人工确认或者 dry-run。这个数字跟模型是 7B 还是 700B 没有关系。</p>
+<h2>对我的项目意味着什么</h2>
+<p>世界杯预测引擎里我把资料库锁死、方法论固化，是同一件事的另一种写法。预测没有 reset，那么任何会污染历史记录的自动写入都不可接受，所以每日 GitHub Actions 只做增量、只做可复现的更新，旧数据不动。这不是保守，是这一步的 reset 预算算下来接近满值，没有试错空间。</p>
+<p>MoneyTrack 那边反过来。本地 SQLite 加分层的四层解耦，记账动作本身可回滚（软删除、变更日志），所以 AI 智能记账可以放开让它自己试错、错了再改。同样是模型能力，能不能让它自由发挥，取决于底层存储给不给回滚。</p>
+<p>人脸识别监控系统里的摄像头权限自检是典型的 gate：权限拿不到，整条链路停住，不能让模型去猜。</p>
+<h2>我的判断可能错在哪</h2>
+<p>反方最强的论点是：真实业务里的不可逆动作，最终会被基础设施一层层包成可逆的。数据库有事务，支付有预授权和退款，消息有草稿箱和撤回窗口。如果这条路走得足够远，reset 预算会被基础设施压到接近 0，那时候端到端架构的劣势就不存在了，我上面这套审计剩下记账价值。</p>
+<p>这个反驳成立需要两个条件：补偿成本趋近于 0，且补偿延迟可以接受。前者在支付和消息领域确实在发生，后者在合规场景永远不成立——一笔错误的外汇申报，退款退不掉处罚。所以我修正一句：我的判断不是端到端不行，是端到端的适用范围由外部系统的补偿能力决定，而不是由模型规模决定。这个版本更难反驳，也更没意思。</p>
+  </article>
+  <footer class="article-footer">
+    <p>本文为个人技术观察，欢迎在 <a href="https://github.com/bboyf/zhangxin.github.io" target="_blank" rel="noopener noreferrer">GitHub</a> 上讨论或指正。</p>
+    <a class="back" href="../index.html#blog">← 返回文章列表</a>
+  </footer>
+</main>
+</body>
+</html>

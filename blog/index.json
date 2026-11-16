@@ -1,6 +1,6 @@
 {
-  "updated": "2026-11-16T08:51:49.743Z",
-  "count": 2,
+  "updated": "2026-11-16T08:59:29.041Z",
+  "count": 3,
   "posts": [
     {
       "title": "长程 Agent 缺的不是上下文，是遗忘",
@@ -15,6 +15,20 @@
       "view": "长程 agent 的稀缺资源不是上下文长度，是可学习的遗忘策略。",
       "readingTime": 8,
       "url": "blog/2026-11-16-long-horizon-agent-forgetting.html"
+    },
+    {
+      "title": "游戏 agent 的迁移价值，藏在 reset 按钮里",
+      "slug": "2026-11-16-agent-reset-budget",
+      "date": "2026-11-16",
+      "tags": [
+        "工程化",
+        "评测",
+        "工具调用"
+      ],
+      "summary": "端到端 VLA 在游戏里成立，靠的是可无限重置的环境而非更聪明的架构。给出一个可跑的动作可逆性审计，用 reset 预算划出端到端的适用边界。",
+      "view": "端到端的适用范围由外部系统的补偿能力决定，不由模型规模决定。",
+      "readingTime": 7,
+      "url": "blog/2026-11-16-agent-reset-budget.html"
     },
     {
       "title": "Agent 的瓶颈不是模型，是输出契约",
