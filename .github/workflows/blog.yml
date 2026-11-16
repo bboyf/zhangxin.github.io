@@ -117,6 +117,10 @@ jobs:
           } > /tmp/pr-body.md
 
           git push -u origin "$BRANCH"
+
+          # PR 标题用第一篇文章的中文标题，而不是文件名
+          FIRST_POST=$(git diff --name-only HEAD~1 -- blog/posts | head -n 1)
+          POST_TITLE=$(grep -m1 '^title:' "$FIRST_POST" | sed 's/^title:[[:space:]]*//')
           gh pr create --base master --head "$BRANCH" \
-            --title "博客初稿 $(date +%F)：$(git diff --name-only HEAD~1 -- blog/posts | head -n 1 | xargs -r basename)" \
+            --title "博客初稿 $(date +%F)：${POST_TITLE:-新文章}" \
             --body-file /tmp/pr-body.md
