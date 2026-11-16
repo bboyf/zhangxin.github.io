@@ -96,7 +96,7 @@ writeFileSync(
   join(OUT_DIR, 'index.json'),
   JSON.stringify(
     {
-      updated: new Date().toISOString(),
+      updated: posts[0] ? posts[0].date : '',
       count: posts.length,
       posts: posts.slice(0, 12).map((p) => ({
         title: p.title,
