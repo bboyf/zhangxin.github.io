@@ -1,6 +1,6 @@
 {
   "updated": "2026-11-16",
-  "count": 3,
+  "count": 4,
   "posts": [
     {
       "title": "长程 Agent 缺的不是上下文，是遗忘",
@@ -28,6 +28,20 @@
       "view": "长程 Agent 的记忆该由策略学出来，向量库加 top-k 只是把工程启发式当成了架构。",
       "readingTime": 7,
       "url": "blog/2026-11-16-learned-memory-over-vector-store.html"
+    },
+    {
+      "title": "用 AI 长期开发一个复杂项目，靠的是开发秩序",
+      "slug": "2026-11-16-ai-long-term-project-discipline",
+      "date": "2026-11-16",
+      "tags": [
+        "工程化",
+        "上下文",
+        "评测"
+      ],
+      "summary": "一份关于 AI 长期开发的实践整理：调研与可读方案、分工执行与交叉审查、分层测试、把踩坑写成规则、发布与安全模式。",
+      "view": "模型只帮你跨过语言门槛，项目能持续演进靠的是人维护的开发秩序。",
+      "readingTime": 8,
+      "url": "blog/2026-11-16-ai-long-term-project-discipline.html"
     },
     {
       "title": "Agent 的瓶颈不是模型，是输出契约",
