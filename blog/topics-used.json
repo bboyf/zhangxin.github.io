@@ -10,5 +10,17 @@
     "source": "本地手写：世界杯预测引擎的四层约束",
     "title": "Agent 的瓶颈不是模型，是输出契约",
     "date": "2026-11-16"
+  },
+  {
+    "url": "https://arxiv.org/abs/2611.27860v1",
+    "source": "Who Grades the Agent? Privilege Separation for Coding-Agent Benchmarks",
+    "title": "评测 Agent 之前，先把裁判挪出沙箱",
+    "date": "2026-11-23"
+  },
+  {
+    "url": "https://www.leiphone.com/category/ai/c9ZMpnn48OtWzF0Z.html",
+    "source": "加州起诉 OpenAI：说起来你可能不信，是模型先动的手",
+    "title": "别把钥匙复制给子 Agent",
+    "date": "2026-11-23"
   }
 ]
