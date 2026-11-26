@@ -10,5 +10,17 @@
     "source": "本地手写：世界杯预测引擎的四层约束",
     "title": "Agent 的瓶颈不是模型，是输出契约",
     "date": "2026-11-16"
+  },
+  {
+    "url": "https://arxiv.org/abs/2611.34813v1",
+    "source": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
+    "title": "可验证的中间产物才是分水岭",
+    "date": "2026-11-26"
+  },
+  {
+    "url": "https://arxiv.org/abs/2611.34920v1",
+    "source": "$μ$-Bench: Benchmarking Multi-User Task Completion in Shared Interaction Voice Agents",
+    "title": "多用户 agent 的坑多半在漏嘴，不在听懂",
+    "date": "2026-11-26"
   }
 ]
